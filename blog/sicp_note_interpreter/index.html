@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SICP_interpreter_笔记</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Ladder@摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）用python实现scheme解释器部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+    <meta name="author" content="CloudyMount">
+    <link rel="canonical" href="https://cloudymount789.github.io/blog/sicp_note_interpreter/">
+
+    <link rel="alternate" type="application/rss+xml" href="https://cloudymount789.github.io//index.xml" title="CloudyMount">
+
+    
+
+
+    <meta property="og:url" content="https://cloudymount789.github.io/blog/sicp_note_interpreter/">
+  <meta property="og:site_name" content="CloudyMount">
+  <meta property="og:title" content="SICP_interpreter_笔记">
+  <meta property="og:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）用python实现scheme解释器部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2026-01-03T15:47:49+08:00">
+    <meta property="article:modified_time" content="2026-01-03T15:47:49+08:00">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SICP_interpreter_笔记">
+  <meta name="twitter:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）用python实现scheme解释器部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://cloudymount789.github.io/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "SICP_interpreter_笔记",
+      "item": "https://cloudymount789.github.io/blog/sicp_note_interpreter/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SICP_interpreter_笔记",
+  "name": "SICP_interpreter_笔记",
+  "description": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）用python实现scheme解释器部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）用python实现scheme解释器部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\n使用python实现scheme解释器 (Interpreters) Hangout\n翻译与解释器基础 (Translation and Interpreter Basics) 主题概述 计算机只能理解二进制 (Binary) ，而高级编程语言需要被翻译成二进制才能运行。解释器 (Interpreter) 实现了即时 (on-the-fly) 翻译和执行 。\n核心概念 (Core Concepts) 1. 翻译类型 (Types of Translation) 编译 (Compiled): 一次性全部翻译，稍后运行 。\n解释 (Interpreted): 边运行边翻译 。\n2. 解释器语言 (Interpreter Languages) 实现语言 (Implementation Language): 用来编写解释器本身的语言（如 Scheme 解释器可能是用 Python 实现的） 。\n被实现语言 (Implemented Language): 用户输入的语言（即 Scheme） 。\n被实现语言被翻译成实现语言 。 3. 读-求值-打印循环 (Read-Eval-Print Loop, REPL) 解释器核心的三个步骤:\n读 (Read): 读取用户输入（字符串）。\n求值 (Eval): 将输入翻译成计算机可读的形式并求值 。\n打印 (Print): 打印结果给用户 。\n读取阶段 (The Read Phase) 主题概述 读取阶段将原始输入字符串转换为一种在实现语言（Python）中可操作的表达式表示 (Expression Representation) 。\n核心概念 1. 词法分析/提词器(Lexical Analysis / Lexer) 将输入字符串转化为标记 (Tokens) 集合 。 分割+提取+初步处理(按照规则转化为放在python列表里的python语法的东西) 标记 (Token): 输入字符串的单个有意义单元，如字面量(literals)、名称(names)、关键字(keywords)、分隔符(delimiters)等 。\n注：\n分隔符：用于分割不同语法单元，如括号，分号，引号 关键字：即special form和standard procedures,如define,lambda,if,begin,quote 名称：即标识符，如函数名，变量名 字面量：表示直接值的语法元素，如数字，字符串，字符(#\\a)，符号('symbol)，布尔值，列表、向量字面量('(1 2 3)、#(a b c))\n2. 语法分析 (Syntactic Analysis / Parser) 将标记转化为实现语言中表达式的表示形式(Representation)。 基本表达式的表示:\n自求值表达式 (Self-Evaluating Expressions) (#t, 5.2): 使用 Python 对应的布尔值或数字 。\n符号 (Symbols) (cons): 使用 Python 字符串 。\n注： scheme 表达式种类：\n自求值表达式(self-evaluatingexpressions) 符号(symbols) 调用表达式(call expressions) 特殊表达式(special form expressions) 3. 表示组合 (Representing Combinations) Scheme 的组合表达式 ( ...) 在内部被表示为包含操作符和操作数的Scheme 链表 (Linked Lists) 。 scm\u003e (define expr '(+ 2 3)) ; Create the expression (+ 2 3) expr scm\u003e (eval expr) ; Evaluate the expression 5 scm\u003e (car expr) ; Get the operator + scm\u003e (cdr expr) ; Get the operands (2 3) 在 Python 中，Scheme 列表通过自定义的 Pair 类和全局 nil 实例来精确表示: Python Pair 和 nil 类:\nclass Pair: def __init__(self, first, second): self.first = first # 相当于 Scheme 的 car self.second = second # 相当于 Scheme 的 cdr def __repr__(self): return 'Pair({0}, {1})'.format(self.first, self.second) class nil: def __repr__(self): return 'nil' nil = nil() # 让所有的nil都是同一个nil,防止每次都创建一个instance,出现不同的instance不能进行相等的运算 4. 特殊情况：引用 (quote) 特殊语法 ‘ 在读取时会被转换成一个完整的 quote 表达式 。 例题 (+ 2 3) 被表示为: Pair('+', Pair(2, Pair(3, nil))) (define (f) 3)表示为 Pair('define', (Pair(Pair('f', nil), Pair(3, nil)))) 4.67 -\u003e 4.67 #t -\u003e True list -\u003e 'list' (cons 2 3) -\u003e Pair('cons', Pair(2, Pair(3, nil))) (if (\u003c x 0) 1 (+ x 1)) -\u003e Pair('if', Pair(Pair('\u003c', Pair('x', Pair(0, nil))), Pair(1, Pair(Pair('+', Pair('x', Pair(1, nil))), nil)))) 遇到括号套一层pair\n'hello -\u003e Pair('quote', Pair('hello', nil)) 求值阶段 (The Eval Phase) 复习：怎么画环境图来着？ (define (make-adder x) (lambda (y) (+ x y))) (define add-three (make-adder 3)) (add-three 5) (add-three 10) 主题概述 求值阶段 (Eval) 是解释器的核心，它接收表达式的表示形式和一个环境 (Environment) ，并返回求值结果（值）。Eval 和 Apply 是相互递归 (mutually-recursive) 的 。\n核心概念 1. 环境与框架 (Environments and Frames) 环境 (Environment): 由当前框架、其父框架及其所有祖先框架直到全局框架组成 。\n框架 (Frame): 在解释器中由 Frame 类实例表示 。 Frame有两个实例属性： bindings: 字典，将 Scheme 符号 (Python 字符串) 绑定到 Scheme 值 。 parent: 指向父框架（另一个frame实例）\n2. 求值基本表达式 (Evaluating Primitive Expressions) 自求值表达式: 它们求值结果就是自身 。\n符号 (Symbols):\n从当前框架开始查找符号的绑定值 。\n如果未找到，递归地向父框架查找，直到全局框架 。\n如果全局框架仍未找到，抛出错误 (SchemeError) 。\n3. 求值组合 (Evaluating Combinations) 组合表达式分为特殊形式和调用表达式，取决于其运算符 。\n特殊形式 (Special Forms): 运算符是特殊的符号（如 define, if, lambda），有其自身的求值规则 。\n调用表达式 (Call Expressions):\n求值运算符，得到一个过程 (Procedure) 。\n从左到右求值所有操作数，得到参数值 。\n应用 (Apply) 过程到参数值 。\n前两步递归的调用eval喵\n应用阶段 (The Apply Phase) 主题概述 应用阶段 (Apply) 将一个过程 (Procedure) 应用于一组参数 (Arguments)。过程有两种类型：内置过程和用户定义过程 。\n核心概念 1. 内置过程 (Built-In Procedures) 例如 +, list, modulo 。\n在解释器中，它们是 BuiltinProcedure 类的实例 。\n应用规则: 直接调用对应的实现语言（Python）函数，并将参数值传入 。 2. 用户定义过程 (User-Defined Procedures) 通过 lambda 或 define 定义 。\n在解释器中，它们是 LambdaProcedure 类的实例，包含形式参数列表、函数体和父框架 (Parent Frame) 。\n应用规则 (Application Rules):\n打开一个新框架 (New Frame)，其父框架是该过程的父框架（即创建该过程时的环境）。\n将形式参数 (Formal Parameters) 绑定到参数值 (Arguments) 上，存储在新框架中 。\n在新框架中求值过程的函数体 。\n3. Eval/Apply 计数 (Counting Eval/Apply Calls) Eval 和 Apply 是相互调用的： 1. Eval（求值）\nEval 的任务是接收一个表达式（代码）和当前环境，并返回它的值。\n基础情况 (Base Cases): 这是递归的终点。\n自求值表达式 (Self-evaluating expressions): 比如数字（5）或字符串（\"hello\"），它们的值就是它们本身。 符号查找 (Look up values): 比如变量名 x。求值器会去内存（环境）中查找 x 对应的值。 递归情况 (Recursive Cases):\nEval(operator) 和 Eval(o): 当遇到一个函数调用时，它先分别求出“函数名”和“所有参数”的具体数值。 Apply(proc, args): 一旦参数准备好了，它就会把这些参数交给 Apply 去实际执行。 特殊形式 (Special Form): 比如 if 语句或 define。这些不是普通函数，需要特殊的处理逻辑 2. Apply（应用）\nApply 的任务是接收一个“函数”和一组“参数”，并执行这个函数。\n基础情况 (Base Cases):\n内置过程 (Built-in procedures): 比如加法 + 或减法 -。这些是由底层硬件或底层语言（如 C 或 Python）直接实现的，不需要再拆解。\n递归情况 (Recursive Cases):\nEval(body) of user defined procedures: 对于用户自己定义的函数，Apply 会打开函数体（Body），然后在这一组新参数的环境下，**重新调用 Eval** 来处理函数体里的代码。 这种相互递归 (Mutual Recursion) 形成了一个闭环。通过这个循环，解释器可以处理极其复杂的嵌套代码：\nEval 负责“拆解”结构。 Apply 负责“执行”动作。 例题 ",
+  "wordCount" : "572",
+  "inLanguage": "zh",
+  "datePublished": "2026-01-03T15:47:49+08:00",
+  "dateModified": "2026-01-03T15:47:49+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "CloudyMount"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloudymount789.github.io/blog/sicp_note_interpreter/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "CloudyMount",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloudymount789.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+    <link rel="icon" href="/images/LittleElysia.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/LittleElysia.png">
+
+<link rel="manifest" href="/images/LittleElysia.png">
+    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+
+    
+    
+    <link rel="stylesheet" href="/css/main.min.ec28f09e946fc0df77c187fcd0d0ebde58fca6de8efb8e1620f3d45c32d4da88.css" integrity="sha256-7CjwnpRvwN93wYf80NDr3lj8pt6O&#43;44WIPPUXDLU2og=" crossorigin="anonymous" media="screen" />
+
+    
+    <link rel="stylesheet" href="/scss/highlight/github-dark.min.min.66034289ee9a113219a2c4aae0a8bd2095ab255c832a42efcf5863f10814e7a1.css" />
+
+    
+    <script src="/js/highlight.min.min.04ed3315a5c3f66e19fbfc8c933577697fe73787c63333adc024c4fabed580bc.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script>(()=>{var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,e=localStorage.getItem("theme");t&&e===null&&(localStorage.setItem("theme","dark"),document.documentElement.setAttribute("data-dark-mode","")),t&&e==="dark"&&document.documentElement.setAttribute("data-dark-mode",""),e==="dark"&&document.documentElement.setAttribute("data-dark-mode","")})()</script>
+    </head>
+<body>
+      <main class="wrapper"><nav class="navigation">
+    <section class="container">
+        <a class="navigation-brand" href="/">
+            主页
+        </a>
+        <input type="checkbox" id="menu-toggle" />
+        <label class="menu-button float-right" for="menu-toggle">
+            <span></span><span></span><span></span>
+        </label>
+        
+        <ul class="navigation-list" id="navigation-list">
+            
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/blog/">文章</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/archive/">归档</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/contact/">联系</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/xx/">网站统计</a>
+            </li>
+            
+            
+
+            <li class="navigation-item menu-separator">
+                <span>|</span>
+            </li>
+
+            
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://github.com/cloudymount789"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+            </li>
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://space.bilibili.com/1369055152?spm_id_from=333.1007.0.0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tv"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg></a>
+            </li>
+            
+            
+
+            <li class="navigation-item navigation-dark">
+                <button id="mode" type="button" aria-label="toggle user light or dark theme">
+                    <span class="toggle-dark"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></span>
+                    <span class="toggle-light"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></span>
+                </button>
+            </li>
+
+            
+        </ul>
+        
+    </section>
+</nav>
+<div id="content">
+<article class="blog-single">
+  <header class="blog-title">
+    <h1>SICP_interpreter_笔记</h1>
+  </header>
+
+  <p>
+  <small>
+    2026年1月3日&nbsp;· 572 字&nbsp;· 3 分钟</small>
+
+  
+<p>
+
+  <div class="blog-toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#翻译与解释器基础-translation-and-interpreter-basics">翻译与解释器基础 (Translation and Interpreter Basics)</a>
+      <ul>
+        <li><a href="#主题概述">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+    <li><a href="#读取阶段-the-read-phase">读取阶段 (The Read Phase)</a>
+      <ul>
+        <li><a href="#主题概述-1">主题概述</a></li>
+        <li><a href="#核心概念">核心概念</a></li>
+      </ul>
+    </li>
+    <li><a href="#求值阶段-the-eval-phase">求值阶段 (The Eval Phase)</a>
+      <ul>
+        <li><a href="#复习怎么画环境图来着">复习：怎么画环境图来着？</a></li>
+        <li><a href="#主题概述-2">主题概述</a></li>
+        <li><a href="#核心概念-1">核心概念</a></li>
+      </ul>
+    </li>
+    <li><a href="#应用阶段-the-apply-phase">应用阶段 (The Apply Phase)</a>
+      <ul>
+        <li><a href="#主题概述-3">主题概述</a></li>
+        <li><a href="#核心概念-2">核心概念</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+
+  <section class="blog-content"><p>摘要</p>
+<p>本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）用python实现scheme解释器部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。</p>
+<h1 id="使用python实现scheme解释器-interpreters">使用python实现scheme解释器 (Interpreters)</h1>
+<p><a href="https://sicp.pascal-lab.net/2025/projects/proj04/index.html"><strong>Hangout</strong></a></p>
+<h2 id="翻译与解释器基础-translation-and-interpreter-basics">翻译与解释器基础 (Translation and Interpreter Basics)</h2>
+<h3 id="主题概述">主题概述</h3>
+<p>计算机只能理解<strong>二进制 (Binary)</strong> ，而高级编程语言需要被翻译成二进制才能运行。解释器 (Interpreter) 实现了<strong>即时 (on-the-fly)</strong> 翻译和执行 。</p>
+<h3 id="核心概念-core-concepts">核心概念 (Core Concepts)</h3>
+<h4 id="1-翻译类型-types-of-translation">1. 翻译类型 (Types of Translation)</h4>
+<p><strong>编译 (Compiled):</strong> 一次性全部翻译，稍后运行 。</p>
+<p><strong>解释 (Interpreted):</strong> 边运行边翻译 。</p>
+<h4 id="2-解释器语言-interpreter-languages">2. 解释器语言 (Interpreter Languages)</h4>
+<p><strong>实现语言 (Implementation Language):</strong> 用来编写解释器本身的语言（如 Scheme 解释器可能是用 Python 实现的） 。</p>
+<p><strong>被实现语言 (Implemented Language):</strong> 用户输入的语言（即 Scheme） 。</p>
+<ul>
+<li>被实现语言被翻译成实现语言 。</li>
+</ul>
+<h4 id="3-读-求值-打印循环-read-eval-print-loop-repl">3. 读-求值-打印循环 (Read-Eval-Print Loop, REPL)</h4>
+<p>解释器核心的三个步骤:</p>
+<ol>
+<li>
+<p><strong>读 (Read):</strong> 读取用户输入（字符串）。</p>
+</li>
+<li>
+<p><strong>求值 (Eval):</strong> 将输入翻译成计算机可读的形式并求值 。</p>
+</li>
+<li>
+<p><strong>打印 (Print):</strong> 打印结果给用户 。</p>
+</li>
+</ol>
+<hr>
+<h2 id="读取阶段-the-read-phase">读取阶段 (The Read Phase)</h2>
+<h3 id="主题概述-1">主题概述</h3>
+<p>读取阶段将原始输入字符串转换为一种在实现语言（Python）中可操作的<strong>表达式表示 (Expression Representation)</strong> 。</p>
+<h3 id="核心概念">核心概念</h3>
+<h4 id="1-词法分析提词器lexical-analysis--lexer">1. 词法分析/提词器(Lexical Analysis / Lexer)</h4>
+<ul>
+<li>将输入字符串转化为<strong>标记 (Tokens)</strong> 集合 。</li>
+<li>分割+提取+初步处理(按照规则转化为放在python列表里的python语法的东西)</li>
+</ul>
+<ul>
+<li>
+<p><strong>标记 (Token):</strong> 输入字符串的单个有意义单元，如字面量(literals)、名称(names)、关键字(keywords)、分隔符(delimiters)等 。</p>
+</li>
+<li>
+<p>注：</p>
+</li>
+</ul>
+<blockquote>
+<p>分隔符：用于分割不同语法单元，如括号，分号，引号
+关键字：即special form和standard procedures,如define,lambda,if,begin,quote
+名称：即标识符，如函数名，变量名
+字面量：表示直接值的语法元素，如数字，字符串，字符(<code>#\a</code>)，符号(<code>'symbol</code>)，布尔值，列表、向量字面量(<code>'(1 2 3)</code>、<code>#(a b c)</code>)</p></blockquote>
+<h4 id="2-语法分析-syntactic-analysis--parser">2. 语法分析 (Syntactic Analysis / Parser)</h4>
+<ul>
+<li>将标记转化为实现语言中表达式的<strong>表示形式(Representation)</strong>。</li>
+</ul>
+<ul>
+<li>
+<p><strong>基本表达式的表示</strong>:</p>
+<ul>
+<li>
+<p><strong>自求值表达式 (Self-Evaluating Expressions)</strong> (<code>#t</code>, <code>5.2</code>): 使用 Python 对应的布尔值或数字 。</p>
+</li>
+<li>
+<p><strong>符号 (Symbols)</strong> (<code>cons</code>): 使用 Python 字符串 。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>注：
+scheme 表达式种类：</p>
+<ul>
+<li>自求值表达式(self-evaluatingexpressions)</li>
+<li>符号(symbols)</li>
+<li>调用表达式(call expressions)</li>
+<li>特殊表达式(special form expressions)</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-表示组合-representing-combinations">3. 表示组合 (Representing Combinations)</h4>
+<ul>
+<li>Scheme 的组合表达式 <code>(&lt;operator&gt; &lt;operand1&gt; ...)</code> 在内部被表示为包含操作符和操作数的<strong>Scheme 链表 (Linked Lists)</strong> 。</li>
+</ul>
+<pre tabindex="0"><code>scm&gt; (define expr &#39;(+ 2 3)) ; Create the expression (+ 2 3)
+expr
+scm&gt; (eval expr) ; Evaluate the expression
+5
+scm&gt; (car expr) ; Get the operator
++
+scm&gt; (cdr expr) ; Get the operands
+(2 3)
+</code></pre><ul>
+<li>在 Python 中，Scheme 列表通过自定义的 <code>Pair</code> 类和全局 <code>nil</code> 实例来精确表示:</li>
+</ul>
+<p><strong>Python <code>Pair</code> 和 <code>nil</code> 类</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Pair</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, first, second):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>first <span style="color:#f92672">=</span> first <span style="color:#75715e"># 相当于 Scheme 的 car</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>second <span style="color:#f92672">=</span> second <span style="color:#75715e"># 相当于 Scheme 的 cdr</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Pair(</span><span style="color:#e6db74">{0}</span><span style="color:#e6db74">, </span><span style="color:#e6db74">{1}</span><span style="color:#e6db74">)&#39;</span><span style="color:#f92672">.</span>format(self<span style="color:#f92672">.</span>first, self<span style="color:#f92672">.</span>second)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">nil</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;nil&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>nil <span style="color:#f92672">=</span> nil()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 让所有的nil都是同一个nil,防止每次都创建一个instance,出现不同的instance不能进行相等的运算</span>
+</span></span></code></pre></div><h4 id="4-特殊情况引用-quote">4. 特殊情况：引用 (<code>quote</code>)</h4>
+<ul>
+<li>特殊语法 <code>‘&lt;expr&gt;</code> 在读取时会被转换成一个完整的 <code>quote</code> 表达式 。</li>
+</ul>
+<h4 id="例题">例题</h4>
+<ol>
+<li><code>(+ 2 3)</code> 被表示为:
+<code>Pair('+', Pair(2, Pair(3, nil)))</code></li>
+<li><code>(define (f) 3)</code>表示为
+<code>Pair('define', (Pair(Pair('f', nil), Pair(3, nil))))</code></li>
+<li><code>4.67</code> -&gt; <code>4.67</code></li>
+<li><code>#t</code> -&gt; <code>True</code></li>
+<li><code>list</code> -&gt; <code>'list'</code></li>
+<li><code>(cons 2 3)</code> -&gt; <code>Pair('cons', Pair(2, Pair(3, nil)))</code></li>
+<li><code>(if (&lt; x 0) 1 (+ x 1))</code>
+-&gt;
+<code>Pair('if', Pair(Pair('&lt;', Pair('x', Pair(0, nil))), Pair(1, Pair(Pair('+',  Pair('x', Pair(1, nil))), nil))))</code></li>
+</ol>
+<blockquote>
+<p>遇到括号套一层pair</p></blockquote>
+<ol start="8">
+<li><code>'hello</code> -&gt; <code>Pair('quote', Pair('hello', nil))</code></li>
+</ol>
+<hr>
+<h2 id="求值阶段-the-eval-phase">求值阶段 (The Eval Phase)</h2>
+<h3 id="复习怎么画环境图来着">复习：怎么画环境图来着？</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-scheme" data-lang="scheme"><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>(<span style="color:#a6e22e">make-adder</span> x)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">lambda </span>(<span style="color:#a6e22e">y</span>) (+ x y)))
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">define </span>add-three (<span style="color:#a6e22e">make-adder</span> <span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">add-three</span> <span style="color:#ae81ff">5</span>)
+</span></span><span style="display:flex;"><span>(<span style="color:#a6e22e">add-three</span> <span style="color:#ae81ff">10</span>)
+</span></span></code></pre></div><p><img src="/images/image-8.png" alt="alt text"></p>
+<h3 id="主题概述-2">主题概述</h3>
+<p>求值阶段 (Eval) 是解释器的核心，它接收表达式的表示形式和一个<strong>环境 (Environment)</strong> ，并返回求值结果（值）。Eval 和 Apply 是<strong>相互递归 (mutually-recursive)</strong> 的 。</p>
+<h3 id="核心概念-1">核心概念</h3>
+<h4 id="1-环境与框架-environments-and-frames">1. 环境与框架 (Environments and Frames)</h4>
+<ul>
+<li>
+<p><strong>环境 (Environment):</strong> 由当前框架、其父框架及其所有祖先框架直到全局框架组成 。</p>
+</li>
+<li>
+<p><strong>框架 (Frame):</strong> 在解释器中由 <code>Frame</code> 类实例表示 。
+Frame有两个实例属性：
+<code>bindings</code>: 字典，将 Scheme 符号 (Python 字符串) 绑定到 Scheme 值 。
+<code>parent</code>: 指向父框架（另一个frame实例）</p>
+</li>
+</ul>
+<h4 id="2-求值基本表达式-evaluating-primitive-expressions">2. 求值基本表达式 (Evaluating Primitive Expressions)</h4>
+<ul>
+<li>
+<p><strong>自求值表达式:</strong> 它们求值结果就是自身 。</p>
+</li>
+<li>
+<p><strong>符号 (Symbols):</strong></p>
+</li>
+</ul>
+<ol>
+<li>
+<p>从<strong>当前框架</strong>开始查找符号的绑定值 。</p>
+</li>
+<li>
+<p>如果未找到，递归地向<strong>父框架</strong>查找，直到<strong>全局框架</strong> 。</p>
+</li>
+<li>
+<p>如果全局框架仍未找到，抛出错误 (<code>SchemeError</code>) 。</p>
+</li>
+</ol>
+<h4 id="3-求值组合-evaluating-combinations">3. 求值组合 (Evaluating Combinations)</h4>
+<p>组合表达式分为<strong>特殊形式</strong>和<strong>调用表达式</strong>，取决于其运算符 。</p>
+<ul>
+<li>
+<p><strong>特殊形式 (Special Forms):</strong> 运算符是特殊的符号（如 <code>define</code>, <code>if</code>, <code>lambda</code>），有其自身的求值规则 。</p>
+</li>
+<li>
+<p><strong>调用表达式 (Call Expressions):</strong></p>
+<ol>
+<li>
+<p>求值运算符，得到一个<strong>过程 (Procedure)</strong> 。</p>
+</li>
+<li>
+<p>从左到右求值所有操作数，得到参数值 。</p>
+</li>
+<li>
+<p><strong>应用 (Apply)</strong> 过程到参数值 。</p>
+</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>前两步递归的调用eval喵</p></blockquote>
+<hr>
+<h2 id="应用阶段-the-apply-phase">应用阶段 (The Apply Phase)</h2>
+<h3 id="主题概述-3">主题概述</h3>
+<p>应用阶段 (Apply) 将一个过程 (Procedure) 应用于一组参数 (Arguments)。过程有两种类型：内置过程和用户定义过程 。</p>
+<h3 id="核心概念-2">核心概念</h3>
+<h4 id="1-内置过程-built-in-procedures">1. 内置过程 (Built-In Procedures)</h4>
+<ul>
+<li>
+<p>例如 <code>+</code>, <code>list</code>, <code>modulo</code> 。</p>
+</li>
+<li>
+<p>在解释器中，它们是 <code>BuiltinProcedure</code> 类的实例 。</p>
+</li>
+</ul>
+<ul>
+<li><strong>应用规则</strong>: 直接调用对应的实现语言（Python）函数，并将参数值传入 。</li>
+</ul>
+<h4 id="2-用户定义过程-user-defined-procedures">2. 用户定义过程 (User-Defined Procedures)</h4>
+<ul>
+<li>
+<p>通过 <code>lambda</code> 或 <code>define</code> 定义 。</p>
+</li>
+<li>
+<p>在解释器中，它们是 <code>LambdaProcedure</code> 类的实例，包含形式参数列表、函数体和<strong>父框架 (Parent Frame)</strong> 。</p>
+</li>
+</ul>
+<p><strong>应用规则 (Application Rules):</strong></p>
+<ol>
+<li>
+<p>打开一个<strong>新框架 (New Frame)</strong>，其父框架是该过程的<strong>父框架</strong>（即创建该过程时的环境）。</p>
+</li>
+<li>
+<p>将形式参数 (Formal Parameters) 绑定到参数值 (Arguments) 上，存储在新框架中 。</p>
+</li>
+<li>
+<p>在<strong>新框架</strong>中求值过程的函数体 。</p>
+</li>
+</ol>
+<h4 id="3-evalapply-计数-counting-evalapply-calls">3. Eval/Apply 计数 (Counting Eval/Apply Calls)</h4>
+<p>Eval 和 Apply 是相互调用的：
+<img src="/images/image-9.png" alt="alt text"></p>
+<p><strong>1. Eval（求值）</strong></p>
+<p><code>Eval</code> 的任务是接收一个表达式（代码）和当前环境，并返回它的值。</p>
+<ul>
+<li>
+<p><strong>基础情况 (Base Cases):</strong> 这是递归的终点。</p>
+<ul>
+<li><strong>自求值表达式 (Self-evaluating expressions):</strong> 比如数字（<code>5</code>）或字符串（<code>&quot;hello&quot;</code>），它们的值就是它们本身。</li>
+<li><strong>符号查找 (Look up values):</strong> 比如变量名 <code>x</code>。求值器会去内存（环境）中查找 <code>x</code> 对应的值。</li>
+</ul>
+</li>
+<li>
+<p><strong>递归情况 (Recursive Cases):</strong></p>
+<ul>
+<li><strong>Eval(operator) 和 Eval(o):</strong> 当遇到一个函数调用时，它先分别求出“函数名”和“所有参数”的具体数值。</li>
+<li><strong>Apply(proc, args):</strong> 一旦参数准备好了，它就会把这些参数交给 <code>Apply</code> 去实际执行。</li>
+<li><strong>特殊形式 (Special Form):</strong> 比如 <code>if</code> 语句或 <code>define</code>。这些不是普通函数，需要特殊的处理逻辑</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. Apply（应用）</strong></p>
+<p><code>Apply</code> 的任务是接收一个“函数”和一组“参数”，并执行这个函数。</p>
+<ul>
+<li>
+<p><strong>基础情况 (Base Cases):</strong></p>
+</li>
+<li>
+<p><strong>内置过程 (Built-in procedures):</strong> 比如加法 <code>+</code> 或减法 <code>-</code>。这些是由底层硬件或底层语言（如 C 或 Python）直接实现的，不需要再拆解。</p>
+</li>
+<li>
+<p><strong>递归情况 (Recursive Cases):</strong></p>
+<ul>
+<li><strong>Eval(body) of user defined procedures:</strong> 对于用户自己定义的函数，<code>Apply</code> 会打开函数体（Body），然后在这一组新参数的环境下，**重新调用 <code>Eval**</code> 来处理函数体里的代码。</li>
+</ul>
+</li>
+</ul>
+<p>这种<strong>相互递归 (Mutual Recursion)</strong> 形成了一个闭环。通过这个循环，解释器可以处理极其复杂的嵌套代码：</p>
+<ul>
+<li><code>Eval</code> 负责“拆解”结构。</li>
+<li><code>Apply</code> 负责“执行”动作。</li>
+</ul>
+<ul>
+<li><strong>例题</strong></li>
+</ul>
+<ol>
+<li><img src="/images/image-10.png" alt="alt text"></li>
+<li><img src="/images/image-11.png" alt="alt text"></li>
+</ol></section>
+
+  
+  
+  <div class="paginator">
+    
+    
+    <a class="next" href="https://cloudymount789.github.io/blog/sicp_note_sql/"><span>SICP_SQL_笔记</span>
+      <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.77086 21.1546C11.0491 22.698 21.4339 21.7773 21.4339 16.3608V4.63375C21.4339 3.93962 21.3581 3.30535 21.1917 2.76787M3.77086 21.1546C1.9934 20.7777 0.973585 18.7264 1.08749 16.688C1.2668 13.479 1.15721 9.43135 1.00513 6.21507C0.87809 3.52811 3.12891 1.16316 5.51029 1.25008C9.76594 1.40542 15.377 1.20229 18.7912 1.00542C20.0864 0.930734 20.8406 1.63385 21.1917 2.76787M3.77086 21.1546C4.56586 21.4723 5.49168 21.7879 6.5 22.0658M21.1917 2.76787C23.1097 4.18217 23.13 12.4191 22.9004 16.3608C20.8478 24.0194 12.3061 23.6662 6.5 22.0658M21.1917 2.76787C21.7612 4.51192 22.7203 9.67216 22 16.3608C21.2797 23.0494 11.3665 22.9511 6.5 22.0658M12.055 9C12.711 9.61644 14.3679 10.997 15.9519 11.7966C16.0174 11.8297 16.0154 11.9753 15.9494 12.0063C14.945 12.4779 13.0706 13.9264 12.055 15M15.5556 11.9667C13.1345 12.0608 8 12 6 11" stroke="currentColor" stroke-linecap="round"/>
+      </svg>
+    </a>
+    
+  </div>
+  
+
+  
+
+
+  
+  
+</article>
+
+
+        </div><footer class="footer">
+  <p>&copy; 2026 <a href="https://cloudymount789.github.io/">CloudyMount</a>
+    Powered by
+    <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>
+    <a href="https://github.com/guangzhengli/hugo-theme-ladder" rel="noopener" target="_blank">Ladder</a>
+️  </p>
+</footer>
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.5376 22.7916C11.0152 22.7207 22.5795 21.1781 22.0978 10.4211C22.0536 9.43274 21.9303 8.53367 21.7387 7.71865M10.5376 22.7916C16.876 22.3728 20.0969 19.8899 21.5383 16.9142M10.5376 22.7916C9.7707 22.9055 8.97982 22.8964 8.19743 22.7725M21.7387 7.71865C21.4988 6.69828 21.1518 5.80967 20.7188 5.04257M21.7387 7.71865C22.6022 10.1105 23.0542 13.7848 21.5383 16.9142M20.7188 5.04257C17.1684 -1.24629 7.83127 0.632493 4.27577 5.04257C2.88063 6.77451 -0.0433281 11.1668 1.38159 16.6571C2.27481 20.0988 5.17269 22.2936 8.19743 22.7725M20.7188 5.04257C22.0697 6.9404 24.0299 11.3848 22.3541 15.4153M21.5383 16.9142C21.8737 16.4251 22.1428 15.9235 22.3541 15.4153M8.19743 22.7725C12.1971 23.4683 20.6281 22.971 22.3541 15.4153M14 10.945C13.3836 10.289 12.003 8.63215 11.2034 7.04814C11.1703 6.98257 11.0247 6.98456 10.9937 7.05061C10.5221 8.05496 9.07362 9.92941 8 10.945M11.0333 7.44444C10.9392 9.86549 11 15 12 17" stroke="currentColor" stroke-linecap="round"/>
+    </svg>
+</a>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'Copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'Copied';
+            setTimeout(() => {
+                copybutton.innerHTML = 'Copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+        codeblock.parentNode.appendChild(copybutton);
+    });
+</script></main>
+    </body>
+  
+  <script src="/main.min.6bb26b69159420159c74dc9e097b06a578ed2b68c701466a91a44a9632d851bd0af167a1b30012387b4c512b48ad9ad4d3394e04d77ae38d57e1920fe4ed34fe.js" integrity="sha512-a7JraRWUIBWcdNyeCXsGpXjtK2jHAUZqkaRKljLYUb0K8WehswASOHtMUStIrZrU0zlOBNd6441X4ZIP5O00/g==" crossorigin="anonymous" defer></script></html>

@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SICP_python_期中后笔记</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Ladder@摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中后课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+    <meta name="author" content="CloudyMount">
+    <link rel="canonical" href="https://cloudymount789.github.io/blog/sicp_note_after_mid/">
+
+    <link rel="alternate" type="application/rss+xml" href="https://cloudymount789.github.io//index.xml" title="CloudyMount">
+
+    
+
+
+    <meta property="og:url" content="https://cloudymount789.github.io/blog/sicp_note_after_mid/">
+  <meta property="og:site_name" content="CloudyMount">
+  <meta property="og:title" content="SICP_python_期中后笔记">
+  <meta property="og:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中后课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2026-01-03T12:47:27+08:00">
+    <meta property="article:modified_time" content="2026-01-03T12:47:27+08:00">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SICP_python_期中后笔记">
+  <meta name="twitter:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中后课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://cloudymount789.github.io/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "SICP_python_期中后笔记",
+      "item": "https://cloudymount789.github.io/blog/sicp_note_after_mid/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SICP_python_期中后笔记",
+  "name": "SICP_python_期中后笔记",
+  "description": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中后课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中后课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\nSICP_python_期中后笔记 拓展 1. Imperative Programming（命令式编程） 核心思想 通过一系列指令（statements）改变程序的状态（state）来完成计算。 关注 HOW（具体步骤）。\n特征 有可变变量（variables） 通过赋值（assignment）改变状态 使用控制结构（control flow）：if / for / while 程序表现为逐步执行的过程 常见语言 C、C++、Java、Python、JavaScript、Go、Rust\n适用场景 操作系统、游戏开发、需要精确流程控制或高性能的系统\n2. Functional Programming（函数式编程） 核心思想 以数学函数为基础，不依赖可变状态，通过函数组合完成计算。 关注 WHAT（要做什么）。\n特征 不可变性（immutability） 纯函数（pure functions），无副作用（side effects） 函数是一等公民（first-class functions） 常用递归（recursion） map / filter / reduce 是典型操作 常见语言 Haskell、Lisp、OCaml、F#；Python/JavaScript 可写函数式风格\n示例（Python） numbers = [1, 2, 3] result = list(map(lambda x: x + 1, numbers)) 适用场景 数学计算、并行计算、金融系统、需要高可预测性的程序\n3. Logic Programming（逻辑式编程） 核心思想 使用事实（facts）和规则（rules）描述问题，由系统进行自动推理（inference）。 关注 WHAT（描述规则），系统决定 HOW（如何推导）。\n特征 程序由 facts + rules + queries 组成 基于一阶逻辑（first-order logic） 使用分辨率（resolution）进行推理 强调声明式描述 常见语言 Prolog（代表性语言）\n示例（Prolog） parent(tom, bob). parent(bob, ann). grandparent(X, Y) :- parent(X, Z), parent(Z, Y). 适用场景 人工智能、知识库、规则引擎、专家系统\n4. 三种范式对比总结 范式 核心思想 状态 State 特征关键词 示例语言 命令式 Imperative 通过指令改变状态（HOW） 可变 assignment, loops, control flow C, Java, Python 函数式 Functional 用函数组合描述计算（WHAT） 不可变 pure functions, immutability, recursion Haskell, Lisp 逻辑式 Logic 用规则推理得到结果（WHAT） 无显式状态 facts, rules, queries, inference Prolog 编译器理解: 词法 -\u003e 语法 -\u003e 语义 Lexical（词法） 把字符拆成最小有意义单位（token）。 识别：变量名、关键字、数字、字符串、运算符、符号等。 作用：告诉编译器“这串字符是什么词”。\nSyntax（语法） 检查 token 是否能组成合法的结构。 作用：决定一句代码的结构是否符合语言规则（是否“通顺”）。\nSemantics（语义） 代码表达的实际含义与执行效果。 作用：定义语句运行后会做什么、得到什么结果。\n代码风格:类型提示(type hint) 检查 Python 版本：\nimport platform print(platform.python_version()) 3.12.7 安装 MyPy ：\n$ python -m pip install mypy 使用 MyPy 进行类型检查：\n$ mypy program.py 1. 变量 (Variables) 声明变量类型 使用冒号 : 来声明变量类型。\nage: int = 1 未初始化的变量注解 不需要立即给变量赋值即可添加注解。这在条件分支赋值中非常有用（运行时直到赋值前没有具体值）。\na: int # 合法 # 示例：在条件分支中使用 child: bool if age \u003c 18: child = True else: child = False 2. 常用的内置类型 (Useful Built-In Types) 基本类型 大多数情况下，直接使用类型名称即可。 注意：mypy 通常能推断出变量类型，因此显式注解在技术上是冗余的，但有助于代码清晰。\nx: int = 1 x: float = 1.0 x: bool = True x: str = \"test\" x: bytes = b\"test\" 集合类型 (Collections) - Python 3.9+ 集合内元素的类型放在方括号 [] 中。\n列表 (List): x: list[int] = [1] 集合 (Set): x: set[int] = {6, 7} 映射类型 (Mappings) 需要同时指定键 (Key) 和值 (Value) 的类型。\n字典 (Dict): x: dict[str, float] = {\"field\": 2.0} 元组 (Tuples)\n固定大小: 需要指定所有元素的类型。 x: tuple[int, str, float] = (3, \"yes\", 7.5) 可变大小: 使用一种类型加上省略号 ...。 x: tuple[int, ...] = (1, 2, 3) 联合类型 (Union Types) - Python 3.10+ 当值可能是多种类型之一时，使用 | 运算符。\nx: list[int | str] = [3, 5, \"test\", \"fun\"] 可选类型 (Optional Types) 对于可能为 None 的值，使用 X | None。\nx: str | None = \"something\" if some_condition() else None # 类型缩窄 (Type Narrowing) if x is not None: print(x.upper()) # Mypy 知道此处 x 不为 None # 如果逻辑上确定不为 None 但 mypy 无法推断，可使用 assert assert x is not None print(x.upper()) 3. 函数 (Functions) 函数定义注解 使用 -\u003e 指定返回类型。\ndef stringify(num: int) -\u003e str: return str(num) 多个参数\ndef plus(num1: int, num2: int) -\u003e int: return num1 + num2 无返回值 如果函数不返回值，返回类型使用 None。\n默认值: 参数的默认值写在类型注解之后。 def show(value: str, excitement: int = 10) -\u003e None: print(value + \"!\" * excitement) 动态类型 (Dynamic Typing)\n未指定类型的参数会被视为 Any（动态类型）。 没有任何注解的函数不会被类型检查器检查。 def untyped(x): x.anything() + 1 + \"string\" # 不会报错 可调用对象 (Callables) 用于注解函数作为参数传递的情况（需要从 collections.abc 导入）。 格式：Callable[[参数类型列表], 返回类型]\nfrom collections.abc import Callable def f(x: int, y: float) -\u003e float: return x + y x: Callable[[int, float], float] = f 生成器 (Generators) 生成器函数实际上是返回一个迭代器，因此使用 Iterator 进行注解。\nfrom collections.abc import Iterator def gen(n: int) -\u003e Iterator[int]: i = 0 while i \u003c n: yield i i += 1 多行函数注解 当参数较多时，可以将注解拆分为多行。\ndef send_email( address: str | list[str], sender: str, cc: list[str] | None, bcc: list[str] | None, subject: str = '', body: list[str] | None = None, ) -\u003e bool: ... 主题 1：面向对象编程基础 (Object-Oriented Programming, OOP) 主题概述 OOP 是一种组织程序的方法，将数据（属性 Attributes）和行为（方法 Methods）捆绑在一起。每个对象拥有自己的局部状态 (Local State)，不同对象之间通过方法调用进行交互。\n这是一种以“对象（objects）”为中心的程序设计方法。对象把数据（属性 attributes）和操作这些数据的行为（方法 methods）封装在一起，通过对象之间的交互来完成程序的功能。\n每个对象都有两个特点：\n它有什么（属性 / 数据）\n它能做什么（行为 / 方法）\nOOP 的三要素（经典版本） 封装（Encapsulation）：把数据与操作封在对象内部，对外提供有限接口。\n继承（Inheritance）：子类可以继承父类的属性和方法，实现代码复用。\n多态（Polymorphism）：同一方法名在不同对象上有不同实现，运行时动态决定调用哪个版本。\n一句话总结\n正经版：OOP = 用对象来组织程序，数据 + 行为一起封装，通过继承复用，通过多态扩展。\n形象版：OOP = 把程序写成一堆“现实世界中的小东西”，每个东西都有属性、有行为，它们互相合作，程序就跑起来了。\n创建对象，让对象自己按照规则做事\n核心概念 (Core Concepts) 1. 类与实例 (Classes and Instances) 类 (Class): 对象的模板。定义了所有实例共享的属性和行为。 实例 (Instance): 类的具体实现。例如，Account 是类，tom_account 是一个实例。 构造函数 (__init__): 当创建一个新实例时自动调用的方法，用于初始化实例属性。 self: 指向当前正在被操作的实例。在类内部定义方法时，第一个参数通常是 self。 2. 属性查找机制 (Attribute Lookup) 当我们求值 . 时，解释器遵循以下顺序：\n求值点号左边的 ，得到一个对象。 查找实例属性: 在该对象的实例属性中查找 。如果找到，返回其值。 查找类属性: 如果实例中没找到，去创建该对象的类中查找。 查找父类: 如果类中没找到，沿着继承链向上查找。 如果找到的是一个函数，则返回一个绑定方法 (Bound Method)。 注意： 赋值操作 (obj.x = 1) 总是会在实例上创建或修改属性，而不会修改类属性。\n3. 点表达式的评估（Evaluation of Dot Expression） .\n求值点号左侧expression，返回对象 将 与该对象的实例属性进行匹配；如果存在具有该名称的属性，则返回其值。 否则，在类中一层一层向上查找 ，这将产生一个类属性值（如果不存在这样的类属性，则会报告 AttributeError）。 不是函数 -\u003e 返回该值； 是函数 -\u003e 返回绑定方法，且将self传入第一个参数。 例题 例1: 封装（Encapsulation）\nWhy we need Encapsulation:\nProtect data security Reduce coupling 例1 # class attribute interest = 0.02 # constructor def __init__(self, account_holder): self.balance = 0 # instance attribute self.holder = account_holder # methods def deposit(self, amount): self.balance += amount return self.balance def withdraw(self, amount): if amount \u003e self.balance: return 'Insufficient funds' self.balance -= amount return self.balance jacy = Account('Jacy') \"\"\" \u003e\u003e\u003e jacy.balance 0 \u003e\u003e\u003e jacy.deposit(10) 10 \u003e\u003e\u003e jacy.withdraw(5) 5 \"\"\" 例2：类属性查找（Class attribute lookup） If it names an attribute in the class, return the attribute value. 如果它指定了类中的一个属性，则返回该属性的值。 Otherwise, look up the name in the base class, if there is one. 否则，在基类中查找该名称（如果有的话）。 例2 class A: z = -1 def f(self, x): return B(x - 1) def __repr__(self): return 'A()' class B(A): n = 4 def __init__ (self, y): if y: self.z = self.f(y) else: self.z = C(y + 1) def __repr__(self): return f'B(z={self.z})' class C(B): def f(self, x): return x def __repr__(self): return f'C(z={self.z})' a = A() b = B(1) b.n = 5 \u003e\u003e\u003e C(2).n 4 \u003e\u003e\u003e a.z == C.z True \u003e\u003e\u003e a.z == b.z False \u003e\u003e\u003e b B(z=B(z=C(z=1))) #为什么C的z是1呢？ #B中的z是一个instance attribute，理论上C在B中找不到不应该去A中找然后得到z=-1吗？ #因为C没有init！！！所以C在创建instance 的时候就会调用一次B的init， #从而在执行init的时候获得一个z！ #C 继承 B 的 init ，所以走 B.init： # y = 1 非零 # self.z = self.f(1) # 但这次 self 是 C 的实例，所以调用的是 C.f： # C.f(self, 1) → return 1 # 因此： # C(1).z = 1 \u003e\u003e\u003e b.z B(z=C(z=1)) \u003e\u003e\u003e b.z.z C(z=1) \u003e\u003e\u003e b.z.z.z 1 \u003e\u003e\u003e b.z.z.z.z Traceback (most recent call last): File \"\", line 1, in \u003cmodule\u003e AttributeError: 'int' object has no attribute 'z' 拓展:LSP: 里氏替换原则： 凡是出现基类的地方，都可以用子类替换它，而不会影响程序的功能。 这意味着子类可以使用基类的所有操作而不出现问题 \u003e\u003e\u003eclass T: ... pass ...class S(T): # inheritance creats subtypes ... pass \u003e\u003e\u003et = T() \u003e\u003e\u003es = S()\t\u003e\u003e\u003eisinstance(t, T)\tTrue\t\u003e\u003e\u003eisinstance(s, S)\tTrue \u003e\u003e\u003eisinstance(s, T)\tTrue 3. 方法 (Methods) 函数 (Function): 也就是普通的 Python 函数。 绑定方法 (Bound Method): 将函数与特定对象（实例）“绑定”在一起。调用时，Python 会自动将该对象作为第一个参数 (self) 传入。 Account.deposit 是函数 (Function)。 tom.deposit 是方法 (Method)。 主题 2：继承与组合 (Inheritance \u0026 Composition) 主题概述 继承允许我们基于已有的类创建新类，实现代码复用和特化。组合则是通过将其他对象作为属性来实现复杂功能。\n核心概念 (Core Concepts) 1. 继承 (Inheritance) 子类 (Subclass) 继承 基类 (Base Class) 的所有属性和方法。 重写 (Overriding): 子类可以重新定义与父类同名的方法，从而改变行为。 super(): 用于在子类中调用父类的方法，常用于扩展 __init__ 或复用父类逻辑。 代码示例： class CheckingAccount(Account): # 继承 Account withdraw_fee = 1 interest = 0.01 def withdraw(self, amount): # 复用父类的 withdraw 方法，加上手续费 return Account.withdraw(self, amount + self.withdraw_fee) 2. 多重继承 (Multiple Inheritance) 一个类可以继承自多个父类。 拓展：菱形问题 (Diamond Problem): 当多个父类继承自同一个祖先时，Python 使用 C3 线性化算法 确定 方法解析顺序 (MRO)，确保每个类只被访问一次。 3. 继承 vs. 组合 (Inheritance vs. Composition) 这是面向对象设计的核心权衡：\n继承 (“Is-a” 关系): CheckingAccount 是一个 Account。用于特化。 组合 (“Has-a” 关系): Bank 有一个 Account 列表。用于通过聚合现有组件来构建复杂对象。 主题 3：多态(Ploymorphism) 分类 特设多态（Ad Hoc Ploymorphism）：同名methon但是不同实现规则 操作符重载（operator overloading）: 同样运算符，不同操作方式\ne.g. x + y 本质上是 x.__add__(y) 。\nx == y 本质上是 x.__eq__(y) 。\n多态函数（polymorphism）: 函数根据输入类型改变行为\n参数多态（parametric polymorphism）: 泛型多态（拓展） from typing import TypeVar, List T = TypeVar('T') def first(lst: List[T]) -\u003e T: return lst[0] 包含多态（inclusion polymorphism）: 继承多态，子类代替父类使用 主题 4：特殊方法 (Special Methods) 主题概述 特殊方法（也称魔术方法，以双下划线开头和结尾）允许自定义对象表现得像 Python 的内置类型。这是实现 多态 (Polymorphism) 的关键。\n核心概念 (Core Concepts) 1. 字符串表示(repr \u0026 str) 区别 方法 英文 目标受众 触发方式 默认行为 __str__ String 人类 (Human) print(), str() 如果没定义，会调用 __repr__。 __repr__ Representation 解释器 (Interpreter) 交互式环境, repr() 返回对象的规范字符串表示，理想情况下 eval(repr(obj)) == obj。 例题： class Fraction: def __init__(self, n, d): self.n, self.d = n, d def __repr__(self): return f\"Fraction({self.n}, {self.d})\" def __str__(self): return f\"{self.n}/{self.d}\" f = Fraction(1, 2) print(f) # 输出: 1/2 (调用 __str__) f # 输出: Fraction(1, 2) (调用 __repr__) [易错]关于引号… str和repr的区别 函数 目的 面向对象 输出特点 是否显示引号 str(obj) 面向用户（友好展示） 用户 可读性强、简洁 ❌ 不显示引号 repr(obj) 面向开发、调试 程序员 尽可能准确、可复现 ✅ 显示引号（字符串时） 示例 s = \"hello\" print(str(s)) # hello print(repr(s)) # 'hello' repr 的目标是 让结果能用于重新构造对象：\neval(repr(s)) == s # True print()和交互式解释器输出的区别 方式 内部调用 引号是否显示 print(obj) str(obj) ❌ 不显示引号 在交互式解释器直接输入表达式 显示 repr(obj) 的结果 ✅ 显示引号（字符串时） 示例： 在 REPL 中：\n\u003e\u003e\u003e \"hello\" 'hello' \u003e\u003e\u003e print(\"hello\") hello 自定义类的 __str__ 和 __repr__ 如果类同时定义了 __str__ 和 __repr__：\n调用者 优先使用的方法 print(obj) __str__ 解释器直接显示 __repr__ eval() 是 Python 内置函数，用来 将字符串当作 Python 表达式求值，然后返回表达式的结果。 示例：\nclass A: def __str__(self): return \"str display\" def __repr__(self): return \"repr display\" a = A() print(a) # str display a # repr display #没有引号!! repr函数会将接收到的参数变成一个字符串交给交互式解释器,然后交互式解释器去掉最外一层引号的内容把字符串里的内容显示出来\n\u003e\u003e\u003e a = 1 \u003e\u003e\u003e a 1 \u003e\u003e\u003e repr(a) '1' \u003e\u003e\u003e repr('1') \"'1'\" \u003e\u003e\u003e eval(repr('1')) '1' \u003e\u003e\u003e eval(repr(a)) 1 \u003e\u003e\u003e eval(a) Traceback (most recent call last): File \"\", line 1, in \u003cmodule\u003e eval(a) ~~~~^^^ TypeError: eval() arg 1 must be a string, bytes or code object 检验理解! \u003e\u003e\u003e class A: ... def __init__(self, x): ... self.x = x ... def __repr__(self): ... return self.x ... def __str__(self): ... return self.x * 2 \u003e\u003e\u003e class B: ... def __init__(self): ... print('boo!') ... self.a = [] ... def add_a(self, a): ... self.a.append(a) ... def __repr__(self): ... print(len(self.a)) ... ret = '' ... for a in self.a: ... ret += str(a) ... return ret \u003e\u003e\u003e A('one') ? one \u003e\u003e\u003e print(A('one')) ? oneone \u003e\u003e\u003e repr(A('two')) ? 'two' \u003e\u003e\u003e b = B() ? boo! \u003e\u003e\u003e b.add_a(A('a')) \u003e\u003e\u003e b.add_a(A('b')) \u003e\u003e\u003e b (line 1)? 2 (line 2)? aabb repr() 的用途总结 用途 示例 调试 显示数据结构的真实内容 可复现性 eval(repr(obj)) == obj 字符串包含特殊字符时的转义展示 'hello\\n' 2. 运算符重载 (Operator Overloading) __add__: 定义 + 操作符的行为。例如 obj1 + obj2 会变成 obj1.__add__(obj2)。 多态 (Polymorphism): 同一个操作符（如 +）可以根据操作数类型的不同（如整数相加 vs. 字符串拼接）表现出不同的行为。 主题 4：递归数据结构 (Linked Lists \u0026 Trees) 主题概述 链表和树是基于递归 (Recursion) 定义的数据结构。它们是 CS61A 中处理复杂数据的基石。\n核心概念 (Core Concepts) 1. 链表 (Linked Lists) 链表要么是空的，要么由一个元素 (first) 和剩余链表 (rest) 组成。\n处理技巧:\n递归处理: Base case 通常是 lnk is Link.empty。\n迭代处理: while lnk is not Link.empty: ... lnk = lnk.rest。\n常用操作: map (映射), filter (过滤) 在链表上的实现。注意链表通常是可变 (Mutable) 的。\n#链表结构实现 class Link: empty = () def __init__(self, first, rest=empty): assert rest is Link.empty or isinstance(rest, Link) self.first = first self.rest = rest def __repr__(self): \"\"\"返回链表的可读字符串（如 \u003c1 2 3\u003e）\"\"\" def helper(lnk): if lnk is Link.empty: return [] first_str = helper(lnk.first) if isinstance(lnk.first, Link) else [str(lnk.first)] rest_str = helper(lnk.rest) return first_str + rest_str elements = helper(self) return f\"\u003c{' '.join(elements)}\u003e\" #链表操作方式 #求和 def sum_links(lnk): if self is Link.empty: return 0 current = self.first.sum_links() if isinstance(self.first, Link) else self.first rest_sum = self.rest.sum_links() if isinstance(self.rest, Link) else 0 return current + rest_sum #表示 def display_link(link): str_num = '' while link is not Link.empty: if isinstance(link.first, Link): elem = display_link(link.first) elif isinstance(link.first, int): elem = str(link.first) str_num += elem link = link.rest print(f'\u003c{' '.join(str_sum)}\u003e') #映射 def map(f, lnk): if lnk is Link.empty: return Link.empty return Link(f(lnk.first), map(f, lnk.rest)) 2. 树 (Trees) 树由一个根标签 (Root Label) 和一组分支 (Branches) 组成。每个分支本身也是一棵树。\nTree 类定义： class Tree: def __init__(self, label, branches=[]): self.label = label # 确保每个分支都是 Tree 的实例，并复制列表以防副作用 for b in branches: assert isinstance(b, Tree) self.branches = list(branches) def is_leaf(self): return not self.branches 核心术语:\nNode (节点): 树中的任何位置。\nLeaf (叶子): 没有分支的节点 (branches 为空)。\n递归处理模式:\n处理当前节点的 label。\n使用 for b in t.branches: 循环递归处理每个分支。\n",
+  "wordCount" : "1650",
+  "inLanguage": "zh",
+  "datePublished": "2026-01-03T12:47:27+08:00",
+  "dateModified": "2026-01-03T12:47:27+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "CloudyMount"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloudymount789.github.io/blog/sicp_note_after_mid/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "CloudyMount",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloudymount789.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+    <link rel="icon" href="/images/LittleElysia.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/LittleElysia.png">
+
+<link rel="manifest" href="/images/LittleElysia.png">
+    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+
+    
+    
+    <link rel="stylesheet" href="/css/main.min.ec28f09e946fc0df77c187fcd0d0ebde58fca6de8efb8e1620f3d45c32d4da88.css" integrity="sha256-7CjwnpRvwN93wYf80NDr3lj8pt6O&#43;44WIPPUXDLU2og=" crossorigin="anonymous" media="screen" />
+
+    
+    <link rel="stylesheet" href="/scss/highlight/github-dark.min.min.66034289ee9a113219a2c4aae0a8bd2095ab255c832a42efcf5863f10814e7a1.css" />
+
+    
+    <script src="/js/highlight.min.min.04ed3315a5c3f66e19fbfc8c933577697fe73787c63333adc024c4fabed580bc.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script>(()=>{var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,e=localStorage.getItem("theme");t&&e===null&&(localStorage.setItem("theme","dark"),document.documentElement.setAttribute("data-dark-mode","")),t&&e==="dark"&&document.documentElement.setAttribute("data-dark-mode",""),e==="dark"&&document.documentElement.setAttribute("data-dark-mode","")})()</script>
+    </head>
+<body>
+      <main class="wrapper"><nav class="navigation">
+    <section class="container">
+        <a class="navigation-brand" href="/">
+            主页
+        </a>
+        <input type="checkbox" id="menu-toggle" />
+        <label class="menu-button float-right" for="menu-toggle">
+            <span></span><span></span><span></span>
+        </label>
+        
+        <ul class="navigation-list" id="navigation-list">
+            
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/blog/">文章</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/archive/">归档</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/contact/">联系</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/xx/">网站统计</a>
+            </li>
+            
+            
+
+            <li class="navigation-item menu-separator">
+                <span>|</span>
+            </li>
+
+            
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://github.com/cloudymount789"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+            </li>
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://space.bilibili.com/1369055152?spm_id_from=333.1007.0.0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tv"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg></a>
+            </li>
+            
+            
+
+            <li class="navigation-item navigation-dark">
+                <button id="mode" type="button" aria-label="toggle user light or dark theme">
+                    <span class="toggle-dark"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></span>
+                    <span class="toggle-light"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></span>
+                </button>
+            </li>
+
+            
+        </ul>
+        
+    </section>
+</nav>
+<div id="content">
+<article class="blog-single">
+  <header class="blog-title">
+    <h1>SICP_python_期中后笔记</h1>
+  </header>
+
+  <p>
+  <small>
+    2026年1月3日&nbsp;· 1650 字&nbsp;· 8 分钟</small>
+
+  
+<p>
+
+  <div class="blog-toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#拓展">拓展</a>
+      <ul>
+        <li><a href="#1-imperative-programming命令式编程">1. Imperative Programming（命令式编程）</a></li>
+        <li><a href="#2-functional-programming函数式编程">2. Functional Programming（函数式编程）</a></li>
+        <li><a href="#3-logic-programming逻辑式编程">3. Logic Programming（逻辑式编程）</a></li>
+        <li><a href="#4-三种范式对比总结">4. 三种范式对比总结</a></li>
+        <li><a href="#编译器理解-词法---语法---语义">编译器理解: 词法 -&gt; 语法 -&gt; 语义</a></li>
+      </ul>
+    </li>
+    <li><a href="#代码风格类型提示type-hint">代码风格:类型提示(type hint)</a>
+      <ul>
+        <li><a href="#1-变量-variables">1. 变量 (Variables)</a></li>
+        <li><a href="#2-常用的内置类型-useful-built-in-types">2. 常用的内置类型 (Useful Built-In Types)</a></li>
+        <li><a href="#3-函数-functions">3. 函数 (Functions)</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-1面向对象编程基础-object-oriented-programming-oop">主题 1：面向对象编程基础 (Object-Oriented Programming, OOP)</a>
+      <ul>
+        <li><a href="#主题概述">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-2继承与组合-inheritance--composition">主题 2：继承与组合 (Inheritance &amp; Composition)</a>
+      <ul>
+        <li><a href="#主题概述-1">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts-1">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-3多态ploymorphism">主题 3：多态(Ploymorphism)</a>
+      <ul>
+        <li><a href="#分类">分类</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-4特殊方法-special-methods">主题 4：特殊方法 (Special Methods)</a>
+      <ul>
+        <li><a href="#主题概述-2">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts-2">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-4递归数据结构-linked-lists--trees">主题 4：递归数据结构 (Linked Lists &amp; Trees)</a>
+      <ul>
+        <li><a href="#主题概述-3">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts-3">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+
+  <section class="blog-content"><p>摘要</p>
+<p>本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中后课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。</p>
+<h1 id="sicp_python_期中后笔记">SICP_python_期中后笔记</h1>
+<hr>
+<h2 id="拓展">拓展</h2>
+<h3 id="1-imperative-programming命令式编程">1. Imperative Programming（命令式编程）</h3>
+<h4 id="核心思想">核心思想</h4>
+<p>通过一系列指令（statements）改变程序的状态（state）来完成计算。
+关注 HOW（具体步骤）。</p>
+<h4 id="特征">特征</h4>
+<ul>
+<li>有可变变量（variables）</li>
+<li>通过赋值（assignment）改变状态</li>
+<li>使用控制结构（control flow）：if / for / while</li>
+<li>程序表现为逐步执行的过程</li>
+</ul>
+<h4 id="常见语言">常见语言</h4>
+<p>C、C++、Java、Python、JavaScript、Go、Rust</p>
+<h4 id="适用场景">适用场景</h4>
+<p>操作系统、游戏开发、需要精确流程控制或高性能的系统</p>
+<h3 id="2-functional-programming函数式编程">2. Functional Programming（函数式编程）</h3>
+<h4 id="核心思想-1">核心思想</h4>
+<p>以数学函数为基础，不依赖可变状态，通过函数组合完成计算。
+关注 WHAT（要做什么）。</p>
+<h4 id="特征-1">特征</h4>
+<ul>
+<li>不可变性（immutability）</li>
+<li>纯函数（pure functions），无副作用（side effects）</li>
+<li>函数是一等公民（first-class functions）</li>
+<li>常用递归（recursion）</li>
+<li>map / filter / reduce 是典型操作</li>
+</ul>
+<h4 id="常见语言-1">常见语言</h4>
+<p>Haskell、Lisp、OCaml、F#；Python/JavaScript 可写函数式风格</p>
+<h4 id="示例python">示例（Python）</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>numbers <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>result <span style="color:#f92672">=</span> list(map(<span style="color:#66d9ef">lambda</span> x: x <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, numbers))
+</span></span></code></pre></div><h4 id="适用场景-1">适用场景</h4>
+<p>数学计算、并行计算、金融系统、需要高可预测性的程序</p>
+<h3 id="3-logic-programming逻辑式编程">3. Logic Programming（逻辑式编程）</h3>
+<h4 id="核心思想-2">核心思想</h4>
+<p>使用事实（facts）和规则（rules）描述问题，由系统进行自动推理（inference）。
+关注 WHAT（描述规则），系统决定 HOW（如何推导）。</p>
+<h4 id="特征-2">特征</h4>
+<ul>
+<li>程序由 facts + rules + queries 组成</li>
+<li>基于一阶逻辑（first-order logic）</li>
+<li>使用分辨率（resolution）进行推理</li>
+<li>强调声明式描述</li>
+</ul>
+<h4 id="常见语言-2">常见语言</h4>
+<p>Prolog（代表性语言）</p>
+<h4 id="示例prolog">示例（Prolog）</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-prolog" data-lang="prolog"><span style="display:flex;"><span><span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">tom</span>, <span style="color:#e6db74">bob</span>).
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">parent</span>(<span style="color:#e6db74">bob</span>, <span style="color:#e6db74">ann</span>).
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">grandparent</span>(X, Y) :- <span style="color:#a6e22e">parent</span>(X, Z), <span style="color:#a6e22e">parent</span>(Z, Y).
+</span></span></code></pre></div><h4 id="适用场景-2">适用场景</h4>
+<p>人工智能、知识库、规则引擎、专家系统</p>
+<h3 id="4-三种范式对比总结">4. 三种范式对比总结</h3>
+<table>
+  <thead>
+      <tr>
+          <th>范式</th>
+          <th>核心思想</th>
+          <th>状态 State</th>
+          <th>特征关键词</th>
+          <th>示例语言</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>命令式 Imperative</td>
+          <td>通过指令改变状态（HOW）</td>
+          <td>可变</td>
+          <td>assignment, loops, control flow</td>
+          <td>C, Java, Python</td>
+      </tr>
+      <tr>
+          <td>函数式 Functional</td>
+          <td>用函数组合描述计算（WHAT）</td>
+          <td>不可变</td>
+          <td>pure functions, immutability, recursion</td>
+          <td>Haskell, Lisp</td>
+      </tr>
+      <tr>
+          <td>逻辑式 Logic</td>
+          <td>用规则推理得到结果（WHAT）</td>
+          <td>无显式状态</td>
+          <td>facts, rules, queries, inference</td>
+          <td>Prolog</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h3 id="编译器理解-词法---语法---语义">编译器理解: 词法 -&gt; 语法 -&gt; 语义</h3>
+<h4 id="lexical词法">Lexical（词法）</h4>
+<p><strong>把字符拆成最小有意义单位（token）。</strong>
+识别：变量名、关键字、数字、字符串、运算符、符号等。
+作用：告诉编译器“这串字符是什么词”。</p>
+<h4 id="syntax语法">Syntax（语法）</h4>
+<p><strong>检查 token 是否能组成合法的结构。</strong>
+作用：决定一句代码的结构是否符合语言规则（是否“通顺”）。</p>
+<h4 id="semantics语义">Semantics（语义）</h4>
+<p><strong>代码表达的实际含义与执行效果。</strong>
+作用：定义语句运行后会做什么、得到什么结果。</p>
+<hr>
+<h2 id="代码风格类型提示type-hint">代码风格:类型提示(type hint)</h2>
+<p>检查 Python 版本：</p>
+<pre tabindex="0"><code>import platform
+print(platform.python_version())
+3.12.7
+</code></pre><p>安装 MyPy ：</p>
+<pre tabindex="0"><code>$ python -m pip install mypy
+</code></pre><p>使用 MyPy 进行类型检查：</p>
+<pre tabindex="0"><code>$ mypy program.py
+</code></pre><h3 id="1-变量-variables">1. 变量 (Variables)</h3>
+<p><strong>声明变量类型</strong>
+使用冒号 <code>:</code> 来声明变量类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>age: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p><strong>未初始化的变量注解</strong>
+不需要立即给变量赋值即可添加注解。这在条件分支赋值中非常有用（运行时直到赋值前没有具体值）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>a: int  <span style="color:#75715e"># 合法</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 示例：在条件分支中使用</span>
+</span></span><span style="display:flex;"><span>child: bool
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> age <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">18</span>:
+</span></span><span style="display:flex;"><span>    child <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    child <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><hr>
+<h3 id="2-常用的内置类型-useful-built-in-types">2. 常用的内置类型 (Useful Built-In Types)</h3>
+<p><strong>基本类型</strong>
+大多数情况下，直接使用类型名称即可。
+<em>注意：mypy 通常能推断出变量类型，因此显式注解在技术上是冗余的，但有助于代码清晰。</em></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>x: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>x: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">1.0</span>
+</span></span><span style="display:flex;"><span>x: bool <span style="color:#f92672">=</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>x: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;test&#34;</span>
+</span></span><span style="display:flex;"><span>x: bytes <span style="color:#f92672">=</span> <span style="color:#e6db74">b</span><span style="color:#e6db74">&#34;test&#34;</span>
+</span></span></code></pre></div><p><strong>集合类型 (Collections) - Python 3.9+</strong>
+集合内元素的类型放在方括号 <code>[]</code> 中。</p>
+<ul>
+<li><strong>列表 (List):</strong> <code>x: list[int] = [1]</code></li>
+<li><strong>集合 (Set):</strong> <code>x: set[int] = {6, 7}</code></li>
+</ul>
+<p><strong>映射类型 (Mappings)</strong>
+需要同时指定键 (Key) 和值 (Value) 的类型。</p>
+<ul>
+<li><strong>字典 (Dict):</strong> <code>x: dict[str, float] = {&quot;field&quot;: 2.0}</code></li>
+</ul>
+<p><strong>元组 (Tuples)</strong></p>
+<ul>
+<li><strong>固定大小:</strong> 需要指定所有元素的类型。
+<code>x: tuple[int, str, float] = (3, &quot;yes&quot;, 7.5)</code></li>
+<li><strong>可变大小:</strong> 使用一种类型加上省略号 <code>...</code>。
+<code>x: tuple[int, ...] = (1, 2, 3)</code></li>
+</ul>
+<p><strong>联合类型 (Union Types) - Python 3.10+</strong>
+当值可能是多种类型之一时，使用 <code>|</code> 运算符。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>x: list[int <span style="color:#f92672">|</span> str] <span style="color:#f92672">=</span> [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#34;test&#34;</span>, <span style="color:#e6db74">&#34;fun&#34;</span>]
+</span></span></code></pre></div><p><strong>可选类型 (Optional Types)</strong>
+对于可能为 <code>None</code> 的值，使用 <code>X | None</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>x: str <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;something&#34;</span> <span style="color:#66d9ef">if</span> some_condition() <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 类型缩窄 (Type Narrowing)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> x <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    print(x<span style="color:#f92672">.</span>upper())  <span style="color:#75715e"># Mypy 知道此处 x 不为 None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 如果逻辑上确定不为 None 但 mypy 无法推断，可使用 assert</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">assert</span> x <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>print(x<span style="color:#f92672">.</span>upper())
+</span></span></code></pre></div><hr>
+<h3 id="3-函数-functions">3. 函数 (Functions)</h3>
+<p><strong>函数定义注解</strong>
+使用 <code>-&gt;</code> 指定返回类型。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">stringify</span>(num: int) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> str(num)
+</span></span></code></pre></div><p><strong>多个参数</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">plus</span>(num1: int, num2: int) <span style="color:#f92672">-&gt;</span> int:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> num1 <span style="color:#f92672">+</span> num2
+</span></span></code></pre></div><p><strong>无返回值</strong>
+如果函数不返回值，返回类型使用 <code>None</code>。</p>
+<ul>
+<li><strong>默认值:</strong> 参数的默认值写在类型注解之后。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">show</span>(value: str, excitement: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>) <span style="color:#f92672">-&gt;</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    print(value <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;!&#34;</span> <span style="color:#f92672">*</span> excitement)
+</span></span></code></pre></div><p><strong>动态类型 (Dynamic Typing)</strong></p>
+<ul>
+<li>未指定类型的参数会被视为 <code>Any</code>（动态类型）。</li>
+<li>没有任何注解的函数不会被类型检查器检查。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">untyped</span>(x):
+</span></span><span style="display:flex;"><span>    x<span style="color:#f92672">.</span>anything() <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;string&#34;</span>  <span style="color:#75715e"># 不会报错</span>
+</span></span></code></pre></div><p><strong>可调用对象 (Callables)</strong>
+用于注解函数作为参数传递的情况（需要从 <code>collections.abc</code> 导入）。
+格式：<code>Callable[[参数类型列表], 返回类型]</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> collections.abc <span style="color:#f92672">import</span> Callable
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">f</span>(x: int, y: float) <span style="color:#f92672">-&gt;</span> float:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x <span style="color:#f92672">+</span> y
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>x: Callable[[int, float], float] <span style="color:#f92672">=</span> f
+</span></span></code></pre></div><p><strong>生成器 (Generators)</strong>
+生成器函数实际上是返回一个迭代器，因此使用 <code>Iterator</code> 进行注解。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> collections.abc <span style="color:#f92672">import</span> Iterator
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">gen</span>(n: int) <span style="color:#f92672">-&gt;</span> Iterator[int]:
+</span></span><span style="display:flex;"><span>    i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> i <span style="color:#f92672">&lt;</span> n:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">yield</span> i
+</span></span><span style="display:flex;"><span>        i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p><strong>多行函数注解</strong>
+当参数较多时，可以将注解拆分为多行。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">send_email</span>(
+</span></span><span style="display:flex;"><span>    address: str <span style="color:#f92672">|</span> list[str],
+</span></span><span style="display:flex;"><span>    sender: str,
+</span></span><span style="display:flex;"><span>    cc: list[str] <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>    bcc: list[str] <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>    subject: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>    body: list[str] <span style="color:#f92672">|</span> <span style="color:#66d9ef">None</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>) <span style="color:#f92672">-&gt;</span> bool:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span></code></pre></div><hr>
+<h2 id="主题-1面向对象编程基础-object-oriented-programming-oop">主题 1：面向对象编程基础 (Object-Oriented Programming, OOP)</h2>
+<h3 id="主题概述">主题概述</h3>
+<ul>
+<li>
+<p>OOP 是一种组织程序的方法，将数据（<strong>属性 Attributes</strong>）和行为（<strong>方法 Methods</strong>）捆绑在一起。每个对象拥有自己的<strong>局部状态 (Local State)</strong>，不同对象之间通过方法调用进行交互。</p>
+</li>
+<li>
+<p>这是一种以“对象（objects）”为中心的程序设计方法。对象把数据（属性 attributes）和操作这些数据的行为（方法 methods）封装在一起，通过对象之间的交互来完成程序的功能。</p>
+</li>
+<li>
+<p>每个对象都有两个特点：</p>
+</li>
+</ul>
+<ol>
+<li>
+<p>它有什么（属性 / 数据）</p>
+</li>
+<li>
+<p>它能做什么（行为 / 方法）</p>
+</li>
+</ol>
+<ul>
+<li>OOP 的三要素（经典版本）</li>
+</ul>
+<ol>
+<li>
+<p>封装（Encapsulation）：把数据与操作封在对象内部，对外提供有限接口。</p>
+</li>
+<li>
+<p>继承（Inheritance）：子类可以继承父类的属性和方法，实现代码复用。</p>
+</li>
+<li>
+<p>多态（Polymorphism）：同一方法名在不同对象上有不同实现，运行时动态决定调用哪个版本。</p>
+</li>
+</ol>
+<p>一句话总结</p>
+<ul>
+<li>
+<p>正经版：<em><strong>OOP = 用对象来组织程序，数据 + 行为一起封装，通过继承复用，通过多态扩展。</strong></em></p>
+</li>
+<li>
+<p>形象版：<em><strong>OOP = 把程序写成一堆“现实世界中的小东西”，每个东西都有属性、有行为，它们互相合作，程序就跑起来了。</strong></em></p>
+</li>
+</ul>
+<p><strong>创建对象，让对象自己按照规则做事</strong></p>
+<h3 id="核心概念-core-concepts">核心概念 (Core Concepts)</h3>
+<h4 id="1-类与实例-classes-and-instances">1. 类与实例 (Classes and Instances)</h4>
+<ul>
+<li><strong>类 (Class)</strong>: 对象的模板。定义了所有实例共享的属性和行为。</li>
+<li><strong>实例 (Instance)</strong>: 类的具体实现。例如，<code>Account</code> 是类，<code>tom_account</code> 是一个实例。</li>
+<li><strong>构造函数 (<code>__init__</code>)</strong>: 当创建一个新实例时自动调用的方法，用于初始化实例属性。</li>
+<li><strong><code>self</code></strong>: 指向<strong>当前正在被操作的实例</strong>。在类内部定义方法时，第一个参数通常是 <code>self</code>。</li>
+</ul>
+<h4 id="2-属性查找机制-attribute-lookup">2. 属性查找机制 (Attribute Lookup)</h4>
+<p>当我们求值 <code>&lt;expression&gt;.&lt;name&gt;</code> 时，解释器遵循以下顺序：</p>
+<ol>
+<li><strong>求值</strong>点号左边的 <code>&lt;expression&gt;</code>，得到一个对象。</li>
+<li><strong>查找实例属性</strong>: 在该对象的实例属性中查找 <code>&lt;name&gt;</code>。如果找到，返回其值。</li>
+<li><strong>查找类属性</strong>: 如果实例中没找到，去创建该对象的<strong>类</strong>中查找。</li>
+<li><strong>查找父类</strong>: 如果类中没找到，沿着继承链向上查找。</li>
+<li>如果找到的是一个函数，则返回一个<strong>绑定方法 (Bound Method)</strong>。</li>
+</ol>
+<blockquote>
+<p><strong>注意：</strong> <strong>赋值操作</strong> (<code>obj.x = 1</code>) 总是会在<strong>实例</strong>上创建或修改属性，而不会修改类属性。</p></blockquote>
+<h4 id="3-点表达式的评估evaluation-of-dot-expression">3. 点表达式的评估（Evaluation of Dot Expression）</h4>
+<p><code>&lt;expression&gt;.&lt;name&gt;</code></p>
+<ul>
+<li>求值点号左侧expression，返回对象</li>
+<li>将 <!-- raw HTML omitted --> 与该对象的实例属性进行匹配；如果存在具有该名称的属性，则返回其值。</li>
+<li>否则，在类中一层一层向上查找 <!-- raw HTML omitted --> ，这将产生一个类属性值（如果不存在这样的类属性，则会报告 AttributeError）。</li>
+<li>不是函数 -&gt; 返回该值；</li>
+<li>是函数 -&gt; 返回绑定方法，且将self传入第一个参数。</li>
+</ul>
+<ul>
+<li><strong>例题</strong></li>
+</ul>
+<blockquote>
+</blockquote>
+<ul>
+<li>
+<p>例1: <strong>封装（Encapsulation）</strong></p>
+</li>
+<li>
+<p>Why we need Encapsulation:</p>
+<ul>
+<li>Protect data security</li>
+<li>Reduce coupling</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>例1
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># class attribute</span>
+</span></span><span style="display:flex;"><span>    interest <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.02</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># constructor</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, account_holder): 
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>balance <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> <span style="color:#75715e"># instance attribute</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>holder <span style="color:#f92672">=</span> account_holder
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># methods</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">deposit</span>(self, amount): 
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>balance <span style="color:#f92672">+=</span> amount
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>balance
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">withdraw</span>(self, amount):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> amount <span style="color:#f92672">&gt;</span> self<span style="color:#f92672">.</span>balance:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;Insufficient funds&#39;</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>balance <span style="color:#f92672">-=</span> amount
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>balance
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>jacy <span style="color:#f92672">=</span> Account(<span style="color:#e6db74">&#39;Jacy&#39;</span>) 
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&gt;&gt;&gt; jacy.balance
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">0
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&gt;&gt;&gt; jacy.deposit(10)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">10
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&gt;&gt;&gt; jacy.withdraw(5)
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">5
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span></code></pre></div><ul>
+<li>例2：<strong>类属性查找（Class attribute lookup）</strong></li>
+</ul>
+<blockquote>
+<ol>
+<li>If it names an attribute in the class, return the attribute value.
+如果它指定了类中的一个属性，则返回该属性的值。</li>
+<li>Otherwise, look up the name in the base class, if there is one.
+否则，在基类中查找该名称（如果有的话）。</li>
+</ol></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>例2
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>:
+</span></span><span style="display:flex;"><span>    z <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">f</span>(self, x):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> B(x <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#39;A()&#39;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>(A):
+</span></span><span style="display:flex;"><span>    n <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span> (self, y):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> y:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>z <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>f(y)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>z <span style="color:#f92672">=</span> C(y <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;B(z=</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>z<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">C</span>(B):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">f</span>(self, x):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> x
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;C(z=</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>z<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> A()
+</span></span><span style="display:flex;"><span>b <span style="color:#f92672">=</span> B(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>b<span style="color:#f92672">.</span>n <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> C(<span style="color:#ae81ff">2</span>)<span style="color:#f92672">.</span>n
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> a<span style="color:#f92672">.</span>z <span style="color:#f92672">==</span> C<span style="color:#f92672">.</span>z
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> a<span style="color:#f92672">.</span>z <span style="color:#f92672">==</span> b<span style="color:#f92672">.</span>z
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b
+</span></span><span style="display:flex;"><span>B(z<span style="color:#f92672">=</span>B(z<span style="color:#f92672">=</span>C(z<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#为什么C的z是1呢？</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#B中的z是一个instance attribute，理论上C在B中找不到不应该去A中找然后得到z=-1吗？</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#因为C没有init！！！所以C在创建instance 的时候就会调用一次B的init，</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#从而在执行init的时候获得一个z！</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#C 继承 B 的 init ，所以走 B.init：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># y = 1   非零</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># self.z = self.f(1)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 但这次 self 是 C 的实例，所以调用的是 C.f：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># C.f(self, 1) → return 1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 因此：</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># C(1).z = 1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b<span style="color:#f92672">.</span>z
+</span></span><span style="display:flex;"><span>B(z<span style="color:#f92672">=</span>C(z<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>))
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b<span style="color:#f92672">.</span>z<span style="color:#f92672">.</span>z
+</span></span><span style="display:flex;"><span>C(z<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b<span style="color:#f92672">.</span>z<span style="color:#f92672">.</span>z<span style="color:#f92672">.</span>z
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b<span style="color:#f92672">.</span>z<span style="color:#f92672">.</span>z<span style="color:#f92672">.</span>z<span style="color:#f92672">.</span>z
+</span></span><span style="display:flex;"><span>Traceback (most recent call last):
+</span></span><span style="display:flex;"><span>  File <span style="color:#e6db74">&#34;&lt;stdin&gt;&#34;</span>, line <span style="color:#ae81ff">1</span>, <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>module<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">AttributeError</span>: <span style="color:#e6db74">&#39;int&#39;</span> object has no attribute <span style="color:#e6db74">&#39;z&#39;</span>
+</span></span></code></pre></div><h4 id="拓展lsp-里氏替换原则"><strong>拓展:LSP: 里氏替换原则：</strong></h4>
+<ul>
+<li>凡是出现基类的地方，都可以用子类替换它，而不会影响程序的功能。</li>
+<li>这意味着子类可以使用基类的所有操作而不出现问题</li>
+</ul>
+<pre tabindex="0"><code>&gt;&gt;&gt;class T:
+...    pass
+...class S(T): # inheritance creats subtypes
+...    pass
+&gt;&gt;&gt;t = T()
+&gt;&gt;&gt;s = S()	
+&gt;&gt;&gt;isinstance(t, T)	
+True	
+&gt;&gt;&gt;isinstance(s, S)	
+True
+&gt;&gt;&gt;isinstance(s, T)	
+True
+</code></pre><h4 id="3-方法-methods">3. 方法 (Methods)</h4>
+<ul>
+<li><strong>函数 (Function)</strong>: 也就是普通的 Python 函数。</li>
+<li><strong>绑定方法 (Bound Method)</strong>: 将函数与特定对象（实例）“绑定”在一起。调用时，Python 会自动将该对象作为第一个参数 (<code>self</code>) 传入。</li>
+<li><code>Account.deposit</code> 是函数 (Function)。</li>
+<li><code>tom.deposit</code> 是方法 (Method)。</li>
+</ul>
+<hr>
+<h2 id="主题-2继承与组合-inheritance--composition">主题 2：继承与组合 (Inheritance &amp; Composition)</h2>
+<h3 id="主题概述-1">主题概述</h3>
+<p>继承允许我们基于已有的类创建新类，实现代码复用和特化。组合则是通过将其他对象作为属性来实现复杂功能。</p>
+<h3 id="核心概念-core-concepts-1">核心概念 (Core Concepts)</h3>
+<h4 id="1-继承-inheritance">1. 继承 (Inheritance)</h4>
+<ul>
+<li><strong>子类 (Subclass)</strong> 继承 <strong>基类 (Base Class)</strong> 的所有属性和方法。</li>
+<li><strong>重写 (Overriding)</strong>: 子类可以重新定义与父类同名的方法，从而改变行为。</li>
+<li><strong><code>super()</code></strong>: 用于在子类中调用父类的方法，常用于扩展 <code>__init__</code> 或复用父类逻辑。</li>
+<li><strong>代码示例</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CheckingAccount</span>(Account): <span style="color:#75715e"># 继承 Account</span>
+</span></span><span style="display:flex;"><span>    withdraw_fee <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    interest <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.01</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">withdraw</span>(self, amount):
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 复用父类的 withdraw 方法，加上手续费</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Account<span style="color:#f92672">.</span>withdraw(self, amount <span style="color:#f92672">+</span> self<span style="color:#f92672">.</span>withdraw_fee)
+</span></span></code></pre></div><h4 id="2-多重继承-multiple-inheritance">2. 多重继承 (Multiple Inheritance)</h4>
+<ul>
+<li>一个类可以继承自多个父类。</li>
+<li>拓展：<strong>菱形问题 (Diamond Problem)</strong>: 当多个父类继承自同一个祖先时，Python 使用 <strong>C3 线性化算法</strong> 确定 <strong>方法解析顺序 (MRO)</strong>，确保每个类只被访问一次。</li>
+</ul>
+<h4 id="3-继承-vs-组合-inheritance-vs-composition">3. 继承 vs. 组合 (Inheritance vs. Composition)</h4>
+<p>这是面向对象设计的核心权衡：</p>
+<ul>
+<li><strong>继承 (&ldquo;Is-a&rdquo; 关系)</strong>: <code>CheckingAccount</code> <strong>是一个</strong> <code>Account</code>。用于特化。</li>
+<li><strong>组合 (&ldquo;Has-a&rdquo; 关系)</strong>: <code>Bank</code> <strong>有一个</strong> <code>Account</code> 列表。用于通过聚合现有组件来构建复杂对象。</li>
+</ul>
+<hr>
+<h2 id="主题-3多态ploymorphism">主题 3：多态(Ploymorphism)</h2>
+<h3 id="分类">分类</h3>
+<ul>
+<li>特设多态（Ad Hoc Ploymorphism）：同名methon但是不同实现规则
+<ul>
+<li>
+<p>操作符重载（operator overloading）: 同样运算符，不同操作方式</p>
+<p>e.g.
+<code>x + y</code> 本质上是 <code>x.__add__(y)</code> 。</p>
+<p><code>x == y</code> 本质上是 <code>x.__eq__(y)</code> 。</p>
+</li>
+<li>
+<p>多态函数（polymorphism）: 函数根据输入类型改变行为</p>
+</li>
+</ul>
+</li>
+<li>参数多态（parametric polymorphism）: 泛型多态（拓展）</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">from</span> typing <span style="color:#f92672">import</span> TypeVar, List
+</span></span><span style="display:flex;"><span>T <span style="color:#f92672">=</span> TypeVar(<span style="color:#e6db74">&#39;T&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">first</span>(lst: List[T]) <span style="color:#f92672">-&gt;</span> T:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> lst[<span style="color:#ae81ff">0</span>]
+</span></span></code></pre></div><ul>
+<li>包含多态（inclusion polymorphism）: 继承多态，子类代替父类使用</li>
+</ul>
+<hr>
+<h2 id="主题-4特殊方法-special-methods">主题 4：特殊方法 (Special Methods)</h2>
+<h3 id="主题概述-2">主题概述</h3>
+<p>特殊方法（也称魔术方法，以双下划线开头和结尾）允许自定义对象表现得像 Python 的内置类型。这是实现 <strong>多态 (Polymorphism)</strong> 的关键。</p>
+<h3 id="核心概念-core-concepts-2">核心概念 (Core Concepts)</h3>
+<h4 id="1-字符串表示repr--str">1. 字符串表示(repr &amp; str)</h4>
+<h5 id="区别">区别</h5>
+<table>
+  <thead>
+      <tr>
+          <th>方法</th>
+          <th>英文</th>
+          <th>目标受众</th>
+          <th>触发方式</th>
+          <th>默认行为</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong><code>__str__</code></strong></td>
+          <td>String</td>
+          <td><strong>人类 (Human)</strong></td>
+          <td><code>print()</code>, <code>str()</code></td>
+          <td>如果没定义，会调用 <code>__repr__</code>。</td>
+      </tr>
+      <tr>
+          <td><strong><code>__repr__</code></strong></td>
+          <td>Representation</td>
+          <td><strong>解释器 (Interpreter)</strong></td>
+          <td>交互式环境, <code>repr()</code></td>
+          <td>返回对象的规范字符串表示，理想情况下 <code>eval(repr(obj)) == obj</code>。</td>
+      </tr>
+  </tbody>
+</table>
+<h5 id="例题"><strong>例题</strong>：</h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Fraction</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, n, d): self<span style="color:#f92672">.</span>n, self<span style="color:#f92672">.</span>d <span style="color:#f92672">=</span> n, d
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self): <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Fraction(</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74">, </span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>d<span style="color:#e6db74">}</span><span style="color:#e6db74">)&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__str__</span>(self): <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>n<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>d<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>f <span style="color:#f92672">=</span> Fraction(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>print(f)       <span style="color:#75715e"># 输出: 1/2 (调用 __str__)</span>
+</span></span><span style="display:flex;"><span>f              <span style="color:#75715e"># 输出: Fraction(1, 2) (调用 __repr__)</span>
+</span></span></code></pre></div><h4 id="易错关于引号">[易错]关于引号&hellip;</h4>
+<ol>
+<li><code>str</code>和<code>repr</code>的区别</li>
+</ol>
+<table>
+  <thead>
+      <tr>
+          <th>函数</th>
+          <th>目的</th>
+          <th>面向对象</th>
+          <th>输出特点</th>
+          <th>是否显示引号</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>str(obj)</code></td>
+          <td>面向用户（友好展示）</td>
+          <td>用户</td>
+          <td>可读性强、简洁</td>
+          <td>❌ 不显示引号</td>
+      </tr>
+      <tr>
+          <td><code>repr(obj)</code></td>
+          <td>面向开发、调试</td>
+          <td>程序员</td>
+          <td>尽可能准确、可复现</td>
+          <td>✅ 显示引号（字符串时）</td>
+      </tr>
+  </tbody>
+</table>
+<ul>
+<li>示例</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>s <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>print(str(s))   <span style="color:#75715e"># hello</span>
+</span></span><span style="display:flex;"><span>print(repr(s))  <span style="color:#75715e"># &#39;hello&#39;</span>
+</span></span></code></pre></div><p><code>repr</code> 的目标是 <strong>让结果能用于重新构造对象</strong>：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>eval(repr(s)) <span style="color:#f92672">==</span> s  <span style="color:#75715e"># True</span>
+</span></span></code></pre></div><hr>
+<ol start="2">
+<li><code>print()</code>和交互式解释器输出的区别</li>
+</ol>
+<table>
+  <thead>
+      <tr>
+          <th>方式</th>
+          <th>内部调用</th>
+          <th>引号是否显示</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>print(obj)</code></td>
+          <td><code>str(obj)</code></td>
+          <td>❌ 不显示引号</td>
+      </tr>
+      <tr>
+          <td>在交互式解释器直接输入表达式</td>
+          <td>显示 <code>repr(obj)</code> 的结果</td>
+          <td>✅ 显示引号（字符串时）</td>
+      </tr>
+  </tbody>
+</table>
+<ul>
+<li>示例：</li>
+</ul>
+<p>在 REPL 中：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;hello&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(<span style="color:#e6db74">&#34;hello&#34;</span>)
+</span></span><span style="display:flex;"><span>hello
+</span></span></code></pre></div><hr>
+<ol start="3">
+<li>自定义类的 <code>__str__</code> 和 <code>__repr__</code></li>
+</ol>
+<p>如果类同时定义了 <code>__str__</code> 和 <code>__repr__</code>：</p>
+<table>
+  <thead>
+      <tr>
+          <th>调用者</th>
+          <th>优先使用的方法</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>print(obj)</code></td>
+          <td><code>__str__</code></td>
+      </tr>
+      <tr>
+          <td>解释器直接显示</td>
+          <td><code>__repr__</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>eval() 是 Python 内置函数，用来 将字符串当作 Python 表达式求值，然后返回表达式的结果。</strong>
+示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__str__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;str display&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;repr display&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>a <span style="color:#f92672">=</span> A()
+</span></span><span style="display:flex;"><span>print(a)   <span style="color:#75715e"># str display</span>
+</span></span><span style="display:flex;"><span>a          <span style="color:#75715e"># repr display</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#没有引号!!</span>
+</span></span></code></pre></div><p><strong>repr函数会将接收到的参数变成一个字符串交给交互式解释器,然后交互式解释器去掉最外一层引号的内容把字符串里的内容显示出来</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> a <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> a
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> repr(a)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;1&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> repr(<span style="color:#e6db74">&#39;1&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#39;1&#39;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> eval(repr(<span style="color:#e6db74">&#39;1&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;1&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> eval(repr(a))
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> eval(a)
+</span></span><span style="display:flex;"><span>Traceback (most recent call last):
+</span></span><span style="display:flex;"><span>  File <span style="color:#e6db74">&#34;&lt;stdin&gt;&#34;</span>, line <span style="color:#ae81ff">1</span>, <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>module<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    eval(a)
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">~~~~^^^</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">TypeError</span>: eval() arg <span style="color:#ae81ff">1</span> must be a string, bytes <span style="color:#f92672">or</span> code object
+</span></span></code></pre></div><ul>
+<li>检验理解!</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span>:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, x):
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         self<span style="color:#f92672">.</span>x <span style="color:#f92672">=</span> x
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>x
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__str__</span>(self):
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>x <span style="color:#f92672">*</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span>:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self):
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         print(<span style="color:#e6db74">&#39;boo!&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         self<span style="color:#f92672">.</span>a <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_a</span>(self, a):
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         self<span style="color:#f92672">.</span>a<span style="color:#f92672">.</span>append(a)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>     <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         print(len(self<span style="color:#f92672">.</span>a))
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         ret <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         <span style="color:#66d9ef">for</span> a <span style="color:#f92672">in</span> self<span style="color:#f92672">.</span>a:
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>              ret <span style="color:#f92672">+=</span> str(a)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">...</span>         <span style="color:#66d9ef">return</span> ret
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> A(<span style="color:#e6db74">&#39;one&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">?</span> one
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> print(A(<span style="color:#e6db74">&#39;one&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">?</span> oneone
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> repr(A(<span style="color:#e6db74">&#39;two&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#e6db74">&#39;two&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b <span style="color:#f92672">=</span> B()
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">?</span> boo<span style="color:#960050;background-color:#1e0010">!</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b<span style="color:#f92672">.</span>add_a(A(<span style="color:#e6db74">&#39;a&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b<span style="color:#f92672">.</span>add_a(A(<span style="color:#e6db74">&#39;b&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> b
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(line <span style="color:#ae81ff">1</span>)<span style="color:#960050;background-color:#1e0010">?</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>(line <span style="color:#ae81ff">2</span>)<span style="color:#960050;background-color:#1e0010">?</span> aabb
+</span></span></code></pre></div><hr>
+<ul>
+<li><code>repr()</code> 的用途总结</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th>用途</th>
+          <th>示例</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>调试</td>
+          <td>显示数据结构的真实内容</td>
+      </tr>
+      <tr>
+          <td>可复现性</td>
+          <td><code>eval(repr(obj)) == obj</code></td>
+      </tr>
+      <tr>
+          <td>字符串包含特殊字符时的转义展示</td>
+          <td><code>'hello\n'</code></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h4 id="2-运算符重载-operator-overloading">2. 运算符重载 (Operator Overloading)</h4>
+<ul>
+<li><strong><code>__add__</code></strong>: 定义 <code>+</code> 操作符的行为。例如 <code>obj1 + obj2</code> 会变成 <code>obj1.__add__(obj2)</code>。</li>
+<li><strong>多态 (Polymorphism)</strong>: 同一个操作符（如 <code>+</code>）可以根据操作数类型的不同（如整数相加 vs. 字符串拼接）表现出不同的行为。</li>
+</ul>
+<hr>
+<h2 id="主题-4递归数据结构-linked-lists--trees">主题 4：递归数据结构 (Linked Lists &amp; Trees)</h2>
+<h3 id="主题概述-3">主题概述</h3>
+<p>链表和树是基于<strong>递归 (Recursion)</strong> 定义的数据结构。它们是 CS61A 中处理复杂数据的基石。</p>
+<h3 id="核心概念-core-concepts-3">核心概念 (Core Concepts)</h3>
+<h4 id="1-链表-linked-lists">1. 链表 (Linked Lists)</h4>
+<p>链表要么是空的，要么由一个元素 (<code>first</code>) 和剩余链表 (<code>rest</code>) 组成。</p>
+<ul>
+<li>
+<p><strong>处理技巧</strong>:</p>
+</li>
+<li>
+<p><strong>递归处理</strong>: Base case 通常是 <code>lnk is Link.empty</code>。</p>
+</li>
+<li>
+<p><strong>迭代处理</strong>: <code>while lnk is not Link.empty: ... lnk = lnk.rest</code>。</p>
+</li>
+<li>
+<p><strong>常用操作</strong>: <code>map</code> (映射), <code>filter</code> (过滤) 在链表上的实现。注意链表通常是<strong>可变 (Mutable)</strong> 的。</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#链表结构实现</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Link</span>:
+</span></span><span style="display:flex;"><span>    empty <span style="color:#f92672">=</span> ()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, first, rest<span style="color:#f92672">=</span>empty):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> rest <span style="color:#f92672">is</span> Link<span style="color:#f92672">.</span>empty <span style="color:#f92672">or</span> isinstance(rest, Link)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>first <span style="color:#f92672">=</span> first
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>rest <span style="color:#f92672">=</span> rest
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__repr__</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;&#34;&#34;返回链表的可读字符串（如 &lt;1 2 3&gt;）&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">helper</span>(lnk):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> lnk <span style="color:#f92672">is</span> Link<span style="color:#f92672">.</span>empty:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> []
+</span></span><span style="display:flex;"><span>            first_str <span style="color:#f92672">=</span> helper(lnk<span style="color:#f92672">.</span>first) <span style="color:#66d9ef">if</span> isinstance(lnk<span style="color:#f92672">.</span>first, Link) <span style="color:#66d9ef">else</span> [str(lnk<span style="color:#f92672">.</span>first)]
+</span></span><span style="display:flex;"><span>            rest_str <span style="color:#f92672">=</span> helper(lnk<span style="color:#f92672">.</span>rest)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> first_str <span style="color:#f92672">+</span> rest_str
+</span></span><span style="display:flex;"><span>        elements <span style="color:#f92672">=</span> helper(self)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;&lt;</span><span style="color:#e6db74">{</span><span style="color:#e6db74">&#39; &#39;</span><span style="color:#f92672">.</span>join(elements)<span style="color:#e6db74">}</span><span style="color:#e6db74">&gt;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#链表操作方式</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#求和</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sum_links</span>(lnk):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> self <span style="color:#f92672">is</span> Link<span style="color:#f92672">.</span>empty:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        current <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>first<span style="color:#f92672">.</span>sum_links() <span style="color:#66d9ef">if</span> isinstance(self<span style="color:#f92672">.</span>first, Link) <span style="color:#66d9ef">else</span> self<span style="color:#f92672">.</span>first
+</span></span><span style="display:flex;"><span>        rest_sum <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>rest<span style="color:#f92672">.</span>sum_links() <span style="color:#66d9ef">if</span> isinstance(self<span style="color:#f92672">.</span>rest, Link) <span style="color:#66d9ef">else</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> current <span style="color:#f92672">+</span> rest_sum
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#表示</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">display_link</span>(link):
+</span></span><span style="display:flex;"><span>    str_num <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> link <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> Link<span style="color:#f92672">.</span>empty:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> isinstance(link<span style="color:#f92672">.</span>first, Link):
+</span></span><span style="display:flex;"><span>            elem <span style="color:#f92672">=</span> display_link(link<span style="color:#f92672">.</span>first)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">elif</span> isinstance(link<span style="color:#f92672">.</span>first, int):
+</span></span><span style="display:flex;"><span>            elem <span style="color:#f92672">=</span> str(link<span style="color:#f92672">.</span>first)
+</span></span><span style="display:flex;"><span>        str_num <span style="color:#f92672">+=</span> elem
+</span></span><span style="display:flex;"><span>        link <span style="color:#f92672">=</span> link<span style="color:#f92672">.</span>rest
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;&lt;</span><span style="color:#e6db74">{</span><span style="color:#e6db74">&#39; &#39;</span><span style="color:#f92672">.</span>join(str_sum)<span style="color:#e6db74">}</span><span style="color:#e6db74">&gt;&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#映射</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">map</span>(f, lnk):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> lnk <span style="color:#f92672">is</span> Link<span style="color:#f92672">.</span>empty:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Link<span style="color:#f92672">.</span>empty
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> Link(f(lnk<span style="color:#f92672">.</span>first), map(f, lnk<span style="color:#f92672">.</span>rest))
+</span></span></code></pre></div><h4 id="2-树-trees">2. 树 (Trees)</h4>
+<p>树由一个<strong>根标签 (Root Label)</strong> 和一组<strong>分支 (Branches)</strong> 组成。每个分支本身也是一棵树。</p>
+<ul>
+<li><strong>Tree 类定义</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Tree</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, label, branches<span style="color:#f92672">=</span>[]):
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>label <span style="color:#f92672">=</span> label
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 确保每个分支都是 Tree 的实例，并复制列表以防副作用</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> b <span style="color:#f92672">in</span> branches:
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">assert</span> isinstance(b, Tree)
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>branches <span style="color:#f92672">=</span> list(branches)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_leaf</span>(self):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">not</span> self<span style="color:#f92672">.</span>branches
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>核心术语</strong>:</p>
+</li>
+<li>
+<p><strong>Node (节点)</strong>: 树中的任何位置。</p>
+</li>
+<li>
+<p><strong>Leaf (叶子)</strong>: 没有分支的节点 (<code>branches</code> 为空)。</p>
+</li>
+<li>
+<p><strong>递归处理模式</strong>:</p>
+</li>
+<li>
+<p>处理当前节点的 <code>label</code>。</p>
+</li>
+<li>
+<p>使用 <code>for b in t.branches:</code> 循环递归处理每个分支。</p>
+</li>
+</ul></section>
+
+  
+  
+  <div class="paginator">
+    
+    <a class="prev" href="https://cloudymount789.github.io/blog/sicp_note_scheme/">
+      <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.77086 21.1546C11.0491 22.698 21.4339 21.7773 21.4339 16.3608V4.63375C21.4339 3.93962 21.3581 3.30535 21.1917 2.76787M3.77086 21.1546C1.9934 20.7777 0.973585 18.7264 1.08749 16.688C1.2668 13.479 1.15721 9.43135 1.00513 6.21507C0.87809 3.52811 3.12891 1.16316 5.51029 1.25008C9.76594 1.40542 15.377 1.20229 18.7912 1.00542C20.0864 0.930734 20.8406 1.63385 21.1917 2.76787M3.77086 21.1546C4.56586 21.4723 5.49168 21.7879 6.5 22.0658M21.1917 2.76787C23.1097 4.18217 23.13 12.4191 22.9004 16.3608C20.8478 24.0194 12.3061 23.6662 6.5 22.0658M21.1917 2.76787C21.7612 4.51192 22.7203 9.67216 22 16.3608C21.2797 23.0494 11.3665 22.9511 6.5 22.0658M9.94496 9C9.28897 9.61644 7.63215 10.997 6.04814 11.7966C5.98257 11.8297 5.98456 11.9753 6.05061 12.0063C7.05496 12.4779 8.92941 13.9264 9.94496 15M6.44444 11.9667C8.86549 12.0608 14 12 16 11" stroke="currentColor" stroke-linecap="round"/>
+      </svg>
+      <span>SICP_scheme_笔记</span></a>
+    
+    
+    <a class="next" href="https://cloudymount789.github.io/blog/politics/"><span>思政重点</span>
+      <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.77086 21.1546C11.0491 22.698 21.4339 21.7773 21.4339 16.3608V4.63375C21.4339 3.93962 21.3581 3.30535 21.1917 2.76787M3.77086 21.1546C1.9934 20.7777 0.973585 18.7264 1.08749 16.688C1.2668 13.479 1.15721 9.43135 1.00513 6.21507C0.87809 3.52811 3.12891 1.16316 5.51029 1.25008C9.76594 1.40542 15.377 1.20229 18.7912 1.00542C20.0864 0.930734 20.8406 1.63385 21.1917 2.76787M3.77086 21.1546C4.56586 21.4723 5.49168 21.7879 6.5 22.0658M21.1917 2.76787C23.1097 4.18217 23.13 12.4191 22.9004 16.3608C20.8478 24.0194 12.3061 23.6662 6.5 22.0658M21.1917 2.76787C21.7612 4.51192 22.7203 9.67216 22 16.3608C21.2797 23.0494 11.3665 22.9511 6.5 22.0658M12.055 9C12.711 9.61644 14.3679 10.997 15.9519 11.7966C16.0174 11.8297 16.0154 11.9753 15.9494 12.0063C14.945 12.4779 13.0706 13.9264 12.055 15M15.5556 11.9667C13.1345 12.0608 8 12 6 11" stroke="currentColor" stroke-linecap="round"/>
+      </svg>
+    </a>
+    
+  </div>
+  
+
+  
+
+
+  
+  
+</article>
+
+
+        </div><footer class="footer">
+  <p>&copy; 2026 <a href="https://cloudymount789.github.io/">CloudyMount</a>
+    Powered by
+    <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>
+    <a href="https://github.com/guangzhengli/hugo-theme-ladder" rel="noopener" target="_blank">Ladder</a>
+️  </p>
+</footer>
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.5376 22.7916C11.0152 22.7207 22.5795 21.1781 22.0978 10.4211C22.0536 9.43274 21.9303 8.53367 21.7387 7.71865M10.5376 22.7916C16.876 22.3728 20.0969 19.8899 21.5383 16.9142M10.5376 22.7916C9.7707 22.9055 8.97982 22.8964 8.19743 22.7725M21.7387 7.71865C21.4988 6.69828 21.1518 5.80967 20.7188 5.04257M21.7387 7.71865C22.6022 10.1105 23.0542 13.7848 21.5383 16.9142M20.7188 5.04257C17.1684 -1.24629 7.83127 0.632493 4.27577 5.04257C2.88063 6.77451 -0.0433281 11.1668 1.38159 16.6571C2.27481 20.0988 5.17269 22.2936 8.19743 22.7725M20.7188 5.04257C22.0697 6.9404 24.0299 11.3848 22.3541 15.4153M21.5383 16.9142C21.8737 16.4251 22.1428 15.9235 22.3541 15.4153M8.19743 22.7725C12.1971 23.4683 20.6281 22.971 22.3541 15.4153M14 10.945C13.3836 10.289 12.003 8.63215 11.2034 7.04814C11.1703 6.98257 11.0247 6.98456 10.9937 7.05061C10.5221 8.05496 9.07362 9.92941 8 10.945M11.0333 7.44444C10.9392 9.86549 11 15 12 17" stroke="currentColor" stroke-linecap="round"/>
+    </svg>
+</a>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'Copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'Copied';
+            setTimeout(() => {
+                copybutton.innerHTML = 'Copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+        codeblock.parentNode.appendChild(copybutton);
+    });
+</script></main>
+    </body>
+  
+  <script src="/main.min.6bb26b69159420159c74dc9e097b06a578ed2b68c701466a91a44a9632d851bd0af167a1b30012387b4c512b48ad9ad4d3394e04d77ae38d57e1920fe4ed34fe.js" integrity="sha512-a7JraRWUIBWcdNyeCXsGpXjtK2jHAUZqkaRKljLYUb0K8WehswASOHtMUStIrZrU0zlOBNd6441X4ZIP5O00/g==" crossorigin="anonymous" defer></script></html>

@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SICP_python_期中前笔记</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Ladder@摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中前课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+    <meta name="author" content="CloudyMount">
+    <link rel="canonical" href="https://cloudymount789.github.io/blog/sicp_note_before_mid/">
+
+    <link rel="alternate" type="application/rss+xml" href="https://cloudymount789.github.io//index.xml" title="CloudyMount">
+
+    
+
+
+    <meta property="og:url" content="https://cloudymount789.github.io/blog/sicp_note_before_mid/">
+  <meta property="og:site_name" content="CloudyMount">
+  <meta property="og:title" content="SICP_python_期中前笔记">
+  <meta property="og:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中前课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2025-12-11T17:02:23+08:00">
+    <meta property="article:modified_time" content="2025-12-11T17:02:23+08:00">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SICP_python_期中前笔记">
+  <meta name="twitter:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中前课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://cloudymount789.github.io/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "SICP_python_期中前笔记",
+      "item": "https://cloudymount789.github.io/blog/sicp_note_before_mid/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SICP_python_期中前笔记",
+  "name": "SICP_python_期中前笔记",
+  "description": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中前课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中前课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\nSICP_python_期中前笔记 易错提醒 记得初始化参数！ 记得每个函数接受多少个输入！ 记得return！ lambda函数要在被()调用的时候才会执行！ 被next拿出来的会在可变序列中消失！pop也是！可变序列在一处被修改后，所有对它的引用都会随之改变！！！ 易忘函数 all(iterable) 功能：如果 iterable 中所有元素为 True，返回 True，否则返回 False。 注意：会短路，即遇到第一个 False 时立即返回 False。 any(iterable) 功能：如果 iterable 中至少有一个元素为 True，返回 True，否则返回 False。 注意：会短路，即遇到第一个 True 时立即返回 True。 enumerate(iterable, start=0) 功能：返回一个枚举对象，包含可迭代对象的索引和值。 注意：start 参数指定索引的起始值。 filter(function, iterable) 功能：根据 function 函数过滤 iterable 中的元素，只有 function 返回 True 的元素会被保留。 注意：返回一个迭代器，需要转换为列表等容器查看结果。 pow(x, y, z=None) 功能：返回 x 的 y 次幂。如果提供了 z，则返回 (x ** y) % z。 注意：该函数在处理大数时效率较高。 zip(*iterables) 功能：将多个可迭代对象按元素配对，返回一个包含元组的迭代器。 注意：如果输入可迭代对象长度不一致，按最短长度配对。需要转换为列表等容器查看结果。 错题： #1 f1 = print(2 + 3) f2 = lambda: print(2 + 3) print(f1, f2, f2()) \u003e\u003e\u003e5, 5, None, Function, None #2 print(\"hello\") and print(\"world\") \u003e\u003e\u003ehello \"\"\"and只对左边求值，右边被短路，返回左边的值为None，而REPL遇到None不输出内容\"\"\" #3 神秘斐波那契数列 def mystery(): yield 1 yield 1 iter1 = mystery() iter2 = mystery() next(iter2) yield from map(lambda pair: pair[0] + pair[1], zip(iter1, iter2)) series1 = mystery() series2 = filter(lambda n: n % 2 != 0, series1) \u003e\u003e\u003e[next(series1) for _ in range(2)] \u003e\u003e\u003e[next(series1) for _ in range(2)] \u003e\u003e\u003e[next(series2) for _ in range(2)] \u003e\u003e\u003enext(series1) \u003e\u003e\u003e[1, 1] \u003e\u003e\u003e[2, 3] \u003e\u003e\u003e[5, 13] \u003e\u003e\u003e21 #4 \"\"\"抽象的猜出一个函数的作用！ 存在递归调用的生成器一般是无限的！ 注意赋值语句在赋值的时候是不求值的！被使用的时候才会求值\"\"\" Functions \u0026 Control Expression \u0026 Value An expression describes a computation and evaluates to a value\ninclude : function call notation, operators and operands order : evaluate operater subexpression \u003e operand ~ \u003e apply types : primitive(numbers, strings, names), arithmetic, call Programs manipulate values\ntypes: 4 Expressions evaluate to values in one or more steps Name \u0026 Assignment Values can be assigned to names to make referring to them easier.\nA name can only be bound to a single value.\nOne way to introduce a new name in a program is with an assignment statement.\nStatements affect the program, but do not evaluate to values.\nFunction Definition function : abstraction Execution rule for def Statements\nCreate a function with signature () Set the body of that function to be everything indented after the first line Bind to that function in the current frame Function Call (Eval \u0026 Apply) Procedure for calling/applying user-defined functions (for now)\nCreate a new environment frame Bind the function’s parameters to its arguments in that frame Execute the body of the function in the new environment Pure / Non-Pure Functions (Print vs Return, None) The special value None represents nothing in Python A function that does not explicitly return a value will return None Careful: None is not displayed by the interpreter as the value of an expression Pure Functions just return values\nNon-Pure Functions have side effects\nConditional Control (If-Statement) Execution Rule for Conditional Statements:\nEach header is considered in order\nEvaluate the header’s conditional expression if the header is not an else If the expression evaluates to true or the header is an else, execute the suite and skip the remaining headers 要特别注意!有的语句前不该用elif/ else, 会导致被短路，只是检查条件的话，可以只用一个if就好了\nBoolean Expressions \u0026 Short Circuiting boolean contexts: False values in Python: False, None, 0, ‘’ (more to come)\nTrue values: everything else special operators and and and … Evaluate to the first false value. If none are false, evaluates to the last expression or or or … Evaluate to first true value. If none are true, evaluates to the last expression not Evaluates to True if if a false value and False if is a true value 返回的是操作数的值！不是True or False！\nnotice: Short-Circuiting —— avoid side-effect and error Iterative Control (While-Statement) Execution Rule for While Statements:\nEvaluate the header’s expression If it is a true value, execute the (whole) suite, then return to step 1 \"\"\"斐波那契数列\"\"\" def fib(n): \"\"\"Compute the nth Fibonacci number, for N \u003e= 1\"\"\" pred, curr = 0, 1 # 0th and 1st Fibonacci numbers k = 1 # curr is the kth Fibonacci number while k \u003c n: pred, curr = curr, pred + curr k += 1 return curr Error Messages 见后\nEnvironment Diagrams A visual tool to keep track of bindings \u0026 state of a computer program\nA frame keeps track of variable-to-value bindings. Every call expression has a corresponding frame. Global, a.k.a(又名). the global frame, is the starting frame. It doesn’t correspond to a specific call expression. Parent frames The parent of a function is the frame in which it was defined. If you can’t find a variable in the current frame, you check it’s parent, and so on. If you can’t find the variable, NameError Assignment Statements bind variable to value\nDef Statements Create a function value: in current frame func \u003cname\u003e(\u003cformal parameters\u003e) [parent=\u003clabel\u003e] #Its parent is the current frame. Bind \u003cname\u003e to the function value in the current frame Call Expressions Add a local frame, titled with the of the function being applied. Copy the parent of the function (not always the current frame) to the local frame: [parent=] Bind the to the arguments in the local frame. Execute the body of the function in the environment that starts with the local frame Variable Lookup Variable Lookup:\nLookup name in the current frame Lookup name in parent frame, its parent frame, etc.. Stop at the global frame If not found, an error is thrown 注意： 函数的parent frame 取决于def的环境，而不是调用的环境 只能寻找并使用，若要修改则需要用nonlocal or global 声明 区别函数传参：若使用而未改变传入参数，则若外部参数发生变化，内部参数也会随之发生变化；若改变了该参数，相当于在内部框架对参数进行重新赋值，不会改变外部参数的值，称为闭包，并且此后外部参数再发生变化不会影响内部参数 求值（Evaluation）：是对表达式的求解和计算过程。 应用（Apply）：是指 函数调用，即将一个函数和它的参数结合在一起并执行。 当你调用一个函数时，首先会 求值 参数，接着 应用 函数。 Lambda Expressions evaluate to functions !\nOnly the def statement gives the function an intrinsic name\nnotice: lambda for loop 如果你在循环中使用 lambda 函数时，要注意变量绑定的问题。通常，这种情况会导致 lambda 函数在创建时捕获的变量值是循环结束后的最终值。\n示例： fs = [lambda: i for i in range(5)] print([f() for f in fs]) # [4, 4, 4, 4, 4] 原因：\nlambda 捕获的是外部的 i 变量，而不是 i 在每次迭代中的值。所以，在迭代完成后，i 的值是 4，因此所有的 lambda 函数最终都返回 4。\n解决方案： fs = [(lambda i: lambda: i)(i) for i in range(5)] print([f() for f in fs]) # [0, 1, 2, 3, 4] 通过为每个 lambda 函数创建一个局部作用域，确保每个 lambda 捕获当前 i 的值。\nRecursion The same function fact is called multiple times, each time solving a simpler problem All the frames share the same parent - only difference is the argument What n evaluates to depends upon the current environment（在每个frame中修改n的时候实现重新赋值，而不会因为其他frame而改变当前frame的n的值） 执行顺序是从最末情况到base case开始创建frame，返回值是从base case得到的值回到最末层 Lists Box and Poinger Notation Lists in Lists in Lists point to another list\nDefault Arguments Higher order functions takes a function as an argument value, and/or returns a function as a return value(often defined locally)\nuse: Abstraction and Generalization! Give each function exactly one job, but make it apply to many related situations(分步进行的计算) Generalize over different form of computation Helps remove repetitive segments of code Lambda Expressions vs. Def Statements 见这里\nFunction Design \u0026 Generalization 函数泛化，提高可读性、可维护性和扩展性，在不同情景保持复用性\nFunctions As Arguments eg. 常见的高阶函数：\nmap()：对一个可迭代对象的每个元素应用一个函数。\nfilter()：根据给定的条件过滤一个可迭代对象。\nreduce()：累积地应用一个二元函数到一个可迭代对象上。\nFunctions That Return Functions 常常用于构建 闭包（closures），在其中返回的函数使用外部函数的环境变量来执行任务。\nFunction Currying 函数柯里化（Currying）是将接受多个参数的函数转化为一系列接受单一参数的函数的技术。换句话说，柯里化的过程是将一个多参数的函数分解成多个单参数的函数序列。\n函数柯里化使得你可以部分应用函数参数，即先提供部分参数，得到一个新的函数，等待剩余的参数。\n部分应用：通过柯里化，你可以将一个多参数的函数转化为一系列单一参数的函数，这有助于代码的简化和模块化。\n函数链：柯里化可以链式调用，允许更流畅的表达式。\nSelf Reference 自我引用是指一个对象、函数或变量引用自己。在函数编程中，自我引用通常用于递归函数的实现，它允许函数在其内部调用自己来解决问题。\n自我引用常常出现在递归中，其中函数调用自身来逐步解决子问题，直到达到一个基本情况。\nRecursion means: solving problems with a naturally repeating structure - they are defined in terms of themselves It requires you to find patterns of smaller problems, and to define the smallest problem possible Function Abstraction 核心：隐藏复杂性，提供简洁的接口 Definition of Recursion 递归是一种通过函数调用自身来解决问题的方法。递归的核心在于问题能被分解成更简单的子问题，且每次递归都会接近基础情况（base case）。\n基础情况：递归停止的条件，通常是最简单的情况，比如 n == 0 或 n == 1。\n递归情况：问题通过递归调用被分解成更小的子问题，最终汇总得到答案。\nStructure of a Recursive Function Divide - Conquer - Combine 递归函数通常遵循以下结构：\n分解（Divide）：将问题分解成一个或多个子问题。(多种情况or多个步骤)\n解决（Conquer）：解决更小的子问题，通常是递归地调用函数。\n合并（Combine）：将子问题的解合并，得到问题的最终解。\n递归结构的关键是将一个复杂的问题通过逐步减小问题的规模，最终解决最小的子问题。\n知道上个子问题的答案，可以怎样解决下一个问题？ base case是什么？ Tree Recursion \u0026 Recursion Tree 树状递归是指递归函数的调用图呈树状结构。每次递归调用都会产生多个子调用，类似树的分支。递归树的深度取决于递归的层数，广度取决于每一层的调用数\nMutual Recursion 互相递归是指两个或更多的函数互相调用对方来完成任务。这种递归结构通常在两个函数的行为依赖于彼此时出现。\ndef is_odd(n): if n == 0: return False else: return is_even(n - 1) def is_even(n): if n == 0: return True else: return is_odd(n - 1) Iteration vs. Recursion 递归可以更清晰地表示分解问题的过程，尤其是当问题的结构天然适合分解时。\n迭代通常更高效，因为每次递归调用都要维护栈帧，而迭代只需要更新变量。\nRecursion Examples: When learning to write recursive functions, put the base case/s first\n注意考虑边界情况! eg.Count Partitions Goal: Count the number of ways to give out n ( \u003e 0) pieces of chocolate if nobody can have more than m (\u003e 0) pieces.\nIf n is negative, then we cannot get to a valid partition If n is 0, then we have arrived at a valid partition If the largest piece we can use is 0, then we cannot get to a valid partition Sum-Digits def sum_digits(n): if n == 0: return 0 else: return n % 10 + sum_digits(n // 10) Cascade(级联) 级联递归指的是将多个函数或操作按顺序组合，每个函数的输出作为下一个函数的输入\n#从高位开始输出每位数字 def cascade(n): if n \u003c 10: print(n) else: cascade(n // 10) print(n % 10) \"\"\"在递归函数中，通常会在每一次递归调用时暂停当前函数的执行，直到递归结束并返回\"\"\" #从低位开始输出每位数字 def cascade(n): if n \u003c 10: print(n) else: print(n % 10) cascade(n // 10) Fibonacci def fibonacci(n): if n \u003c= 1: return n return fibonacci(n - 1) + fibonacci(n - 2) Count-Partitions def count_partitions(n): if n == 0: return 1 count = 0 for i in range(1, n + 1): count += count_partitions(n - i) return count If Time - Speeding Up Recursion store some values that had already calculated\nSUMMERY Recursion has three main components\nBase case/s: The simplest form of the problem Recursive call/s: Smaller version of the problem Use the solution to the smaller version of the problem to arrive at the solution to the original problem When working with recursion, use functional abstraction: assume the recursive call gives the correct result Tree recursion makes multiple recursive calls and explores different choices Use doctests and your own examples to help you figure out the simplest forms and how to make the problem smaller Sequence Sequence Abstraction All sequences have finite length. Each element in a sequence has a discrete integer index.\nSequence Operation (Expression) #### Get Item get the ith element \u003cseq\u003e[i] #### Slicing ##### Slicing Creates New Values create a copy of the sequence from i to j \u003cseq\u003e[i:j:skip] #### Check Membership check if the value of \u003cexpr\u003e is in \u003cseq\u003e \u003cexpr\u003e in \u003cseq\u003e #### Concatenate combine two sequences into a single sequence \u003cs1\u003e + \u003cs2\u003e Sequence Processing (Statement) #### Iterating For each element in \u003cseq\u003e: 1) Bind it to \u003cname\u003e 2) Execute \u003cbody\u003e Unpacking Range range(\u003cstart\u003e, \u003cend\u003e, \u003cskip\u003e) List List Comprehensions [\u003cexpr\u003e for \u003cname\u003e in \u003cseq\u003e if \u003ccond\u003e] String String Literals (Three Forms) Python 中有三种常见的字符串字面量表示形式：\n单引号： ‘Hello’\n双引号： “Hello”\n三引号： ‘‘‘Hello’’’ 或 “““Hello””” 三引号用于表示多行字符串，或者在字符串中包含引号时可以避免转义。\nSequence Aggregation (Sum, Max / Min, All / Any) Dictionary Data abstraction and Tree Compound values combine other values together Data abstraction lets us manipulate compound values as units e.g. 有理数由分子（numerator）和分母（denominator）组成，是分数的精确表示形式，以整数对形式存在。常规表达进行除法运算，可能会丢失精确表示。 so:\n# 基础构造与选择器 def rational(n, d): return [n, d] # 构造有理数（列表形式） def numer(x): return x[0] # 获取分子 def denom(x): return x[1] # 获取分母 # 运算实现 def mul_rational(x, y): return rational(numer(x)*numer(y), denom(x)*denom(y)) # 乘法 def add_rational(x, y): nx, dx = numer(x), denom(x) ny, dy = numer(y), denom(y) return rational(nx*dy + ny*dx, dx*dy) # 加法 def print_rational(x): print(numer(x), '/', denom(x)) # 打印 def rationals_are_equal(x, y): return numer(x)*denom(y) == numer(y)*denom(x) # 相等判断 # 最简形式优化（引入最大公约数） from math import gcd def rational(n, d): g = gcd(n, d) return [n//g, d//g] # 返回最简分数形式的有理 Abstraction Barrier (between Representation \u0026 Use) def: 将数据的表示和使用分开的一种设计思想。\n通过抽象屏障，可以使得数据的表示方式对外部用户隐藏，从而保护数据的结构，使其不容易受到外部代码的直接修改。 把底层的数据结构和功能封装起来，使得使用者可以通过抽象接口来操作数据，而不需要理解内部的实现。\n表示：指的是数据的内部结构，如何在计算机中存储这些数据。\n使用：指的是外部代码与数据进行交互的方式，用户与数据的交互不关心数据的具体实现，只关心如何操作数据。\nConstructor \u0026 Selectors Constructor（构造函数）是用于创建数据对象的函数，它定义了如何通过一些基本组件来构造出复杂的数据结构。\nSelectors（选择器）是用于从已构建的数据结构中提取信息的函数。它们允许用户访问数据结构中的元素或属性。\nbreak: 过度依赖数据的内部实现，或者在外部代码中直接修改、访问类和数据结构的私有部分或底层细节\nAbstract Data Type 指数据结构和操作的组合 e.g.\n列表（List）：一个抽象数据类型，可以进行元素添加、删除、查找等操作，具体实现可以是动态数组、链表等。\n栈（Stack）：一种抽象数据类型，具有push()和pop()等操作，可以通过不同的实现方式（例如数组或链表）来实现。\nClosure 指函数不仅能够访问其自己的局部变量，还能够访问外部函数的局部变量。闭包使得函数能够“记住”它被创建时的环境，即使外部函数已经返回，内部函数仍然能够访问外部函数的变量。\nTree Abstraction 递归描述（木质树视角） 树由一个根（root）和一组分支（branches）组成。 每个分支本身也是一棵树。 零个分支的树称为叶子（leaf）。 Label：节点的值 Branches：子节点或子树，是一个列表，其中每个元素表示一个子节点。 相对描述（家族树视角） 树中每个位置称为节点（node）。 每个节点有一个标签值（label value）。 节点间存在父子关系（parent/child）。 常根据节点位置描述值的关系 树包含标签值和分支列表的结构，分支列表可为空（对应叶子）\nTree Implementation Constructor: tree def tree(label, branches=[]): for branch in branches: assert is_tree(branch) return [label] + list(branches) Selectors: label, branches def label(tree): return tree[0] def branches(tree): return tree[1:] Convinence Functions: is_tree, is_leaf def is_tree(tree): if type(tree) != list or len(tree) \u003c 1: return False for branch in branches(tree): if not is_tree(branch): return False return True def is_leaf(tree): return not branches(tree) Tree Processing (using Recursion) def count_leaves(t): \"\"\"统计树的叶子节点总数\"\"\" if is_leaf(t): return 1 # 叶子节点返回1 else: # 递归计算每个分支的叶子数，求和聚合 branch_counts = [count_leaves(b) for b in branches(t)] return sum(branch_counts) def increment_leaves(t): \"\"\"返回叶子节点标签递增1的新树\"\"\" if is_leaf(t): return tree(label(t) + 1) # 叶子节点标签+1 else: # 递归处理每个分支，保留非叶子节点标签 bs = [increment_leaves(b) for b in branches(t)] return tree(label(t), bs) def increment(t): \"\"\"返回所有节点标签递增1的新树\"\"\" # 根节点标签+1，递归处理所有分支 return tree(label(t) + 1, [increment(b) for b in branches(t)]) Mutablility 指对象在创建后是否可以改变其内容或状态，它们影响了对象的行为、存储方式、以及如何处理对象的引用\nObjects 对象 是程序中所有数据的基本单位。每个对象都有两个主要属性：身份（Identity）和 值（Value）。对象的身份由它的内存地址决定，而值则是对象所包含的数据。对象的行为通过其类型（如列表、字典、整数等）决定\nMutable Objects Lists append()：向列表末尾添加元素。\npop()：移除并返回列表的最后一个元素，或指定索引的元素。\nremove()：移除列表中第一个匹配的指定元素。\nextend()：将一个可迭代对象中的元素添加到列表末尾。\nSlice Assignment：通过切片语法修改列表中的部分元素。\nDictionaries 由键（key）和值（value）对组成的映射。字典允许通过键来查找对应的值，可以进行修改、删除或添加新的键值对。\nMutate with Functions 由于 Python 中的可变对象是通过引用传递的，修改可变对象会影响原始对象\nImmutable Objects Tuple, str, int, float 可变仅指元组本身的元素绑定不可变，若元组包含可变元素（如列表），该可变元素的内容可被修改。\nIdentity \u0026 Equality Identity 指的是对象在内存中的位置，通常由 id() 函数来查看。 同一性（is运算符）：判断两个表达式是否指向同一个对象。 Equality 则是指对象的内容是否相等。对于可变对象，修改对象的内容不会改变对象的身份；而对于不可变对象，任何修改都需要创建一个新对象。 同一对象必然值相等，但值相等的对象不一定是同一对象。 相等性（==运算符）：判断两个表达式的值是否相等。 Default Arguments 函数的默认参数值是函数定义的一部分，仅在函数定义时创建一次，而非每次调用时重新生成。 若默认参数是可变对象（如列表），多次调用函数会共享该对象，导致意外的状态累积。\ndef append_to_list(value, lst=[]): # 注意：默认值是可变的 lst.append(value) return lst print(append_to_list(1)) # 输出 [1] print(append_to_list(2)) # 输出 [1, 2]，因为默认的列表是共享的 要避免这种情况，使用不可变的默认参数（例如 None）并在函数体内初始化：\ndef append_to_list(value, lst=None): if lst is None: lst = [] lst.append(value) return lst print(append_to_list(1)) # 输出 [1] print(append_to_list(2)) # 输出 [2]，避免了共享同一个列表的问题 Mutable Functions (Nonlocal) nonlocal 关键字用于修改外层函数作用域中的变量，而不是创建一个局部变量 tip: 如果外层函数的变量是可变的（例如列表、字典等），你可以修改它的内容，而无需使用 nonlocal。但如果你想直接对变量本身（例如赋值为一个新对象）进行修改，就需要使用 nonlocal。\n如果外层函数的变量是不可变的（例如整数、字符串、元组等），则即使使用 nonlocal 关键字，你也只能修改它的引用，而不能直接改变它的值（因为不可变对象的值一旦创建就无法修改）。\nUnboundLocalError 当你在函数内部引用一个变量，并且该变量在局部作用域中没有声明时，Python 会抛出 UnboundLocalError 错误。这通常发生在试图在函数中修改局部变量时，而没有明确声明该变量为 nonlocal 或 global。\nMutate Mutable Values wihout Nonlocal 如果一个变量是可变的且位于外部作用域，你可以在内部函数中修改它的内容，而不必使用 nonlocal\n#嵌套列表 t = [1, 2, 3] t[1:3] = [t] t.extend(t) t = [[1, 2], [3, 4]] t[0].append(t[1:2]) Iterable Iterable 是任何能够逐个返回其成员的对象。它包括序列类型（如列表、字符串、元组）以及非序列类型（如字典）。\nIterators (iter \u0026 next) iter(iterable)：此函数返回一个迭代器(iterator)，它可以逐个遍历可迭代对象(iterable)的元素。可以把它理解为一本书的书签，从书的前面开始。 next(iterator)：此函数返回迭代器的下一个元素，并将书签移动到下一页。迭代器会记住它的当前位置。如果当前位置已经是书的结尾，它会抛出一个错误。 Views of a Dictionary (keys \u0026 values) 字典及其键(keys)、值(values)和项(items)都是可迭代对象。\nd.keys()：返回字典键的可迭代视图。 d.values()：返回字典值的可迭代视图。 d.items()：返回字典键值对的可迭代视图。 Built-in Functions for Iteration map(func, iterable)：对可迭代对象中的每个元素应用指定的函数。 filter(func, iterable)：过滤可迭代对象中的元素，保留通过函数判断为真的元素。 zip(first_iter, second_iter)：将两个或多个可迭代对象中的元素按顺序组成元组返回。 reversed(sequence)：返回一个反向迭代器，逐个遍历序列中的元素。 Create Iterators 这些函数允许我们创建迭代器：\nmap：将一个函数应用到每个元素。 filter：根据一个条件函数筛选元素。 zip：将两个可迭代对象的元素按顺序组成元组。 reversed：创建一个反向遍历序列的迭代器。 View Iterators 这些函数将可迭代对象转换为不同的数据结构视图：\nlist(iterable)：将可迭代对象转换为列表。 tuple(iterable)：将可迭代对象转换为元组。 sorted(iterable)：将可迭代对象排序后返回一个新的列表。 # Example of iterators and map function def naturals(): x = 0 while True: yield x x += 1 \u003e\u003e\u003e nats = naturals() \u003e\u003e\u003e next(nats) 0 \u003e\u003e\u003e next(nats) 1 \u003e\u003e\u003e nats1, nats2 = naturals(), naturals() \u003e\u003e\u003e [next(nats1) * next(nats2) for _ in range(5)] [0, 1, 4, 9, 16] # Squares the first 5 natural numbers Generators and Generator Functions Generators：生成器是通过调用生成器函数自动创建的迭代器。它使用yield关键字逐个返回值，并保持函数的状态，以便后续调用next()时继续执行。 Generator Functions：生成器函数包含一个或多个yield语句。与普通函数不同，生成器函数在每次yield时返回一个值，而不是一次性返回。 yield value yield关键字用于生成一个值，并挂起函数的执行，之后可以继续执行。\nyield from iterator / iterable yield from语法用于将另一个迭代器或可迭代对象的所有值逐个返回。它简化了代码，在需要将值传递给另一个生成器或可迭代对象时非常有用。\nGenerators Representing Infinite Sequences 生成器可以表示无限序列。例如，上述的naturals()函数生成一个从0开始的无限自然数序列。\nException Exception 是程序在运行时遇到的错误，会打断程序的正常执行流程。\n中文名 英文名 说明 异常 Exception 程序运行时检测到的错误，会中断当前代码的正常执行流程。 抛出异常 Raise an Exception 使用 raise 语句主动触发异常。 捕获异常 Catch / Handle Exception 使用 try...except 捕获并处理异常，防止程序崩溃。 异常传播 Exception Propagation 如果当前作用域未捕获异常，异常会沿着调用栈往上层传递，直到被捕获或导致程序终止。 异常对象 Exception Object 每个异常都是一个类的实例，包含错误类型、信息、堆栈信息等。 异常类层级结构 Exception Hierarchy Python 中所有异常都是从 BaseException 类继承而来的一棵树。 Built-in Exceptions Python提供了多个内建异常，每种异常用于不同类型的错误。\n异常名 英文说明 常见触发场景 SyntaxError Syntax error 语法错误（代码结构非法） IndentationError Indentation error 缩进错误 NameError Undefined variable 使用了未定义的变量 TypeError Type mismatch 类型不兼容（如把字符串加到整数上） ValueError Invalid value 值类型正确但取值非法（如 int(\"abc\")） IndexError Index out of range 列表索引越界 KeyError Missing dictionary key 字典中查找不存在的键 AttributeError Missing attribute 对象没有该属性或方法 ZeroDivisionError Division by zero 除以零错误 IOError / OSError Input/Output error 文件或系统操作失败（如找不到文件） FileNotFoundError File not found 打开不存在的文件 ImportError / ModuleNotFoundError Import error 模块导入失败 RuntimeError Generic runtime error 运行时检测到其他异常情况 RecursionError Maximum recursion depth exceeded 递归层数太深 AssertionError Assertion failed 断言失败（assert） StopIteration Iterator finished 迭代器结束（由迭代协议内部抛出） StopAsyncIteration Async iterator finished 异步迭代结束 Exception Mechanism Detection (发现错误): 错误会在程序执行时被发现。 Raising (raise): 可以通过raise关键字显式地抛出错误。 Propagation (异常传播): 如果当前作用域没有捕获异常，异常会沿着调用栈向上传播，直到被捕获或导致程序终止。 Catching (捕获): 错误可以使用try/except块进行捕获。 Else (无异常时执行): 如果try块没有抛出异常，则执行else块。 Finally (始终执行): 无论是否发生异常，finally块总是会执行。 raise Syntax raise \u003cexpression\u003e # 必须是一个异常对象 Example def divide(a, b): try: assert b != 0, \"Divider cannot be zero\" result = a / b except AssertionError as e: print(\"Assertion failed:\", e) except ZeroDivisionError as e: print(\"Caught division error:\", e) else: print(\"Result is:\", result) finally: print(\"Computation ended.\") divide(10, 0) Output:\nAssertion failed: Divider cannot be zero\rComputation ended. ",
+  "wordCount" : "2305",
+  "inLanguage": "zh",
+  "datePublished": "2025-12-11T17:02:23+08:00",
+  "dateModified": "2025-12-11T17:02:23+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "CloudyMount"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloudymount789.github.io/blog/sicp_note_before_mid/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "CloudyMount",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloudymount789.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+    <link rel="icon" href="/images/LittleElysia.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/LittleElysia.png">
+
+<link rel="manifest" href="/images/LittleElysia.png">
+    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+
+    
+    
+    <link rel="stylesheet" href="/css/main.min.ec28f09e946fc0df77c187fcd0d0ebde58fca6de8efb8e1620f3d45c32d4da88.css" integrity="sha256-7CjwnpRvwN93wYf80NDr3lj8pt6O&#43;44WIPPUXDLU2og=" crossorigin="anonymous" media="screen" />
+
+    
+    <link rel="stylesheet" href="/scss/highlight/github-dark.min.min.66034289ee9a113219a2c4aae0a8bd2095ab255c832a42efcf5863f10814e7a1.css" />
+
+    
+    <script src="/js/highlight.min.min.04ed3315a5c3f66e19fbfc8c933577697fe73787c63333adc024c4fabed580bc.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script>(()=>{var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,e=localStorage.getItem("theme");t&&e===null&&(localStorage.setItem("theme","dark"),document.documentElement.setAttribute("data-dark-mode","")),t&&e==="dark"&&document.documentElement.setAttribute("data-dark-mode",""),e==="dark"&&document.documentElement.setAttribute("data-dark-mode","")})()</script>
+    </head>
+<body>
+      <main class="wrapper"><nav class="navigation">
+    <section class="container">
+        <a class="navigation-brand" href="/">
+            主页
+        </a>
+        <input type="checkbox" id="menu-toggle" />
+        <label class="menu-button float-right" for="menu-toggle">
+            <span></span><span></span><span></span>
+        </label>
+        
+        <ul class="navigation-list" id="navigation-list">
+            
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/blog/">文章</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/archive/">归档</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/contact/">联系</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/xx/">网站统计</a>
+            </li>
+            
+            
+
+            <li class="navigation-item menu-separator">
+                <span>|</span>
+            </li>
+
+            
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://github.com/cloudymount789"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+            </li>
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://space.bilibili.com/1369055152?spm_id_from=333.1007.0.0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tv"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg></a>
+            </li>
+            
+            
+
+            <li class="navigation-item navigation-dark">
+                <button id="mode" type="button" aria-label="toggle user light or dark theme">
+                    <span class="toggle-dark"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></span>
+                    <span class="toggle-light"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></span>
+                </button>
+            </li>
+
+            
+        </ul>
+        
+    </section>
+</nav>
+<div id="content">
+<article class="blog-single">
+  <header class="blog-title">
+    <h1>SICP_python_期中前笔记</h1>
+  </header>
+
+  <p>
+  <small>
+    2025年12月11日&nbsp;· 2305 字&nbsp;· 11 分钟</small>
+
+  
+<p>
+
+  <div class="blog-toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#易错提醒">易错提醒</a></li>
+        <li><a href="#易忘函数">易忘函数</a></li>
+        <li><a href="#错题">错题：</a></li>
+      </ul>
+    </li>
+    <li><a href="#functions--control">Functions &amp; Control</a>
+      <ul>
+        <li><a href="#expression--value">Expression &amp; Value</a></li>
+        <li><a href="#name--assignment">Name &amp; Assignment</a></li>
+        <li><a href="#function-definition">Function Definition</a></li>
+        <li><a href="#function-call-eval--apply">Function Call (Eval &amp; Apply)</a></li>
+        <li><a href="#pure--non-pure-functions-print-vs-return-none">Pure / Non-Pure Functions (Print vs Return, None)</a></li>
+        <li><a href="#conditional-control-if-statement">Conditional Control (If-Statement)</a></li>
+        <li><a href="#boolean-expressions--short-circuiting">Boolean Expressions &amp; Short Circuiting</a></li>
+        <li><a href="#iterative-control-while-statement">Iterative Control (While-Statement)</a></li>
+        <li><a href="#error-messages">Error Messages</a></li>
+      </ul>
+    </li>
+    <li><a href="#environment-diagrams">Environment Diagrams</a>
+      <ul>
+        <li><a href="#assignment-statements">Assignment Statements</a></li>
+        <li><a href="#def-statements">Def Statements</a></li>
+        <li><a href="#call-expressions">Call Expressions</a></li>
+        <li><a href="#variable-lookup">Variable Lookup</a></li>
+        <li><a href="#lambda-expressions">Lambda Expressions</a></li>
+        <li><a href="#recursion">Recursion</a></li>
+        <li><a href="#lists">Lists</a></li>
+        <li><a href="#default-arguments">Default Arguments</a></li>
+      </ul>
+    </li>
+    <li><a href="#higher-order-functions">Higher order functions</a>
+      <ul>
+        <li><a href="#lambda-expressions-vs-def-statements">Lambda Expressions vs. Def Statements</a></li>
+        <li><a href="#function-design--generalization">Function Design &amp; Generalization</a></li>
+        <li><a href="#functions-as-arguments">Functions As Arguments</a></li>
+        <li><a href="#functions-that-return-functions">Functions That Return Functions</a></li>
+        <li><a href="#function-currying">Function Currying</a></li>
+        <li><a href="#self-reference">Self Reference</a></li>
+      </ul>
+    </li>
+    <li><a href="#recursion-1">Recursion</a>
+      <ul>
+        <li><a href="#function-abstraction">Function Abstraction</a></li>
+        <li><a href="#definition-of-recursion">Definition of Recursion</a></li>
+        <li><a href="#structure-of-a-recursive-function">Structure of a Recursive Function</a></li>
+        <li><a href="#tree-recursion--recursion-tree">Tree Recursion &amp; Recursion Tree</a></li>
+        <li><a href="#mutual-recursion">Mutual Recursion</a></li>
+        <li><a href="#iteration-vs-recursion">Iteration vs. Recursion</a></li>
+        <li><a href="#recursion-examples">Recursion Examples:</a></li>
+        <li><a href="#if-time---speeding-up-recursion">If Time - Speeding Up Recursion</a></li>
+        <li><a href="#summery">SUMMERY</a></li>
+      </ul>
+    </li>
+    <li><a href="#sequence">Sequence</a>
+      <ul>
+        <li><a href="#sequence-abstraction">Sequence Abstraction</a></li>
+        <li><a href="#sequence-operation-expression">Sequence Operation (Expression)</a></li>
+        <li><a href="#sequence-processing-statement">Sequence Processing (Statement)</a></li>
+        <li><a href="#range">Range</a></li>
+        <li><a href="#list">List</a></li>
+        <li><a href="#string">String</a></li>
+        <li><a href="#sequence-aggregation-sum-max--min-all--any">Sequence Aggregation (Sum, Max / Min, All / Any)</a></li>
+        <li><a href="#dictionary">Dictionary</a></li>
+      </ul>
+    </li>
+    <li><a href="#data-abstraction-and-tree">Data abstraction and Tree</a>
+      <ul>
+        <li><a href="#abstraction-barrier-between-representation--use">Abstraction Barrier (between Representation &amp; Use)</a></li>
+        <li><a href="#constructor--selectors">Constructor &amp; Selectors</a></li>
+        <li><a href="#abstract-data-type">Abstract Data Type</a></li>
+        <li><a href="#closure">Closure</a></li>
+        <li><a href="#tree-abstraction">Tree Abstraction</a></li>
+        <li><a href="#tree-implementation">Tree Implementation</a></li>
+        <li><a href="#tree-processing-using-recursion">Tree Processing (using Recursion)</a></li>
+      </ul>
+    </li>
+    <li><a href="#mutablility">Mutablility</a>
+      <ul>
+        <li><a href="#objects">Objects</a></li>
+        <li><a href="#mutable-objects">Mutable Objects</a></li>
+        <li><a href="#dictionaries">Dictionaries</a></li>
+        <li><a href="#mutate-with-functions">Mutate with Functions</a></li>
+        <li><a href="#immutable-objects">Immutable Objects</a></li>
+        <li><a href="#identity--equality">Identity &amp; Equality</a></li>
+        <li><a href="#default-arguments-1">Default Arguments</a></li>
+        <li><a href="#mutable-functions-nonlocal">Mutable Functions (Nonlocal)</a></li>
+      </ul>
+    </li>
+    <li><a href="#iterable">Iterable</a>
+      <ul>
+        <li><a href="#iterators-iter--next">Iterators (iter &amp; next)</a></li>
+        <li><a href="#views-of-a-dictionary-keys--values">Views of a Dictionary (keys &amp; values)</a></li>
+        <li><a href="#built-in-functions-for-iteration">Built-in Functions for Iteration</a></li>
+        <li><a href="#create-iterators">Create Iterators</a></li>
+        <li><a href="#view-iterators">View Iterators</a></li>
+        <li><a href="#generators-and-generator-functions">Generators and Generator Functions</a></li>
+        <li><a href="#exception">Exception</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+
+  <section class="blog-content"><p>摘要</p>
+<p>本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）python部分期中前课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。</p>
+<h1 id="sicp_python_期中前笔记">SICP_python_期中前笔记</h1>
+<hr>
+<h3 id="易错提醒">易错提醒</h3>
+<ul>
+<li>记得初始化参数！</li>
+<li>记得每个函数接受多少个输入！</li>
+<li>记得return！</li>
+<li>lambda函数要在被()调用的时候才会执行！</li>
+<li>被next拿出来的会在可变序列中消失！pop也是！可变序列在一处被修改后，所有对它的引用都会随之改变！！！</li>
+</ul>
+<hr>
+<h3 id="易忘函数">易忘函数</h3>
+<ol>
+<li><code>all(iterable)</code></li>
+</ol>
+<ul>
+<li><strong>功能</strong>：如果 <code>iterable</code> 中所有元素为 <code>True</code>，返回 <code>True</code>，否则返回 <code>False</code>。</li>
+<li><strong>注意</strong>：会短路，即遇到第一个 <code>False</code> 时立即返回 <code>False</code>。</li>
+</ul>
+<ol start="2">
+<li><code>any(iterable)</code></li>
+</ol>
+<ul>
+<li><strong>功能</strong>：如果 <code>iterable</code> 中至少有一个元素为 <code>True</code>，返回 <code>True</code>，否则返回 <code>False</code>。</li>
+<li><strong>注意</strong>：会短路，即遇到第一个 <code>True</code> 时立即返回 <code>True</code>。</li>
+</ul>
+<ol start="3">
+<li><code>enumerate(iterable, start=0)</code></li>
+</ol>
+<ul>
+<li><strong>功能</strong>：返回一个枚举对象，包含可迭代对象的索引和值。</li>
+<li><strong>注意</strong>：<code>start</code> 参数指定索引的起始值。</li>
+</ul>
+<ol start="4">
+<li><code>filter(function, iterable)</code></li>
+</ol>
+<ul>
+<li><strong>功能</strong>：根据 <code>function</code> 函数过滤 <code>iterable</code> 中的元素，只有 <code>function</code> 返回 <code>True</code> 的元素会被保留。</li>
+<li><strong>注意</strong>：返回一个迭代器，需要转换为列表等容器查看结果。</li>
+</ul>
+<ol start="5">
+<li><code>pow(x, y, z=None)</code></li>
+</ol>
+<ul>
+<li><strong>功能</strong>：返回 <code>x</code> 的 <code>y</code> 次幂。如果提供了 <code>z</code>，则返回 <code>(x ** y) % z</code>。</li>
+<li><strong>注意</strong>：该函数在处理大数时效率较高。</li>
+</ul>
+<ol start="6">
+<li><code>zip(*iterables)</code></li>
+</ol>
+<ul>
+<li><strong>功能</strong>：将多个可迭代对象按元素配对，返回一个包含元组的迭代器。</li>
+<li><strong>注意</strong>：如果输入可迭代对象长度不一致，按<strong>最短长度</strong>配对。需要转换为列表等容器查看结果。</li>
+</ul>
+<hr>
+<h3 id="错题">错题：</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#1</span>
+</span></span><span style="display:flex;"><span>f1 <span style="color:#f92672">=</span> print(<span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>f2 <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span>: print(<span style="color:#ae81ff">2</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>print(f1, f2, f2())
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span><span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">5</span>, <span style="color:#66d9ef">None</span>, Function, <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#2</span>
+</span></span><span style="display:flex;"><span>print(<span style="color:#e6db74">&#34;hello&#34;</span>) <span style="color:#f92672">and</span> print(<span style="color:#e6db74">&#34;world&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;and只对左边求值，右边被短路，返回左边的值为None，而REPL遇到None不输出内容&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#3 神秘斐波那契数列</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mystery</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">yield</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">yield</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    iter1 <span style="color:#f92672">=</span> mystery()
+</span></span><span style="display:flex;"><span>    iter2 <span style="color:#f92672">=</span> mystery()
+</span></span><span style="display:flex;"><span>    next(iter2)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">yield from</span> map(<span style="color:#66d9ef">lambda</span> pair: pair[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">+</span> pair[<span style="color:#ae81ff">1</span>], zip(iter1, iter2))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>series1 <span style="color:#f92672">=</span> mystery()
+</span></span><span style="display:flex;"><span>series2 <span style="color:#f92672">=</span> filter(<span style="color:#66d9ef">lambda</span> n: n <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>, series1)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>[next(series1) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>)]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>[next(series1) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>)]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>[next(series2) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">2</span>)]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>next(series1)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>[<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span>[<span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">13</span>]
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span><span style="color:#ae81ff">21</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#4</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;抽象的猜出一个函数的作用！
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    存在递归调用的生成器一般是无限的！
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    注意赋值语句在赋值的时候是不求值的！被使用的时候才会求值&#34;&#34;&#34;</span>
+</span></span></code></pre></div><hr>
+<h2 id="functions--control">Functions &amp; Control</h2>
+<hr>
+<h3 id="expression--value">Expression &amp; Value</h3>
+<blockquote>
+<p>An expression describes a computation and evaluates to a value</p></blockquote>
+<ul>
+<li>include : function call notation, operators and operands</li>
+<li>order : evaluate operater subexpression &gt; operand ~ &gt; apply</li>
+<li>types : primitive(numbers, strings, names), arithmetic, call</li>
+</ul>
+<blockquote>
+<p>Programs manipulate values</p></blockquote>
+<ul>
+<li>types: 4</li>
+<li>Expressions evaluate to values in one or more steps</li>
+</ul>
+<h3 id="name--assignment">Name &amp; Assignment</h3>
+<blockquote>
+<p>Values can be assigned to names to make referring to them easier.</p></blockquote>
+<ul>
+<li>
+<p>A name can only be bound to a single value.</p>
+</li>
+<li>
+<p>One way to introduce a new name in a program is with an assignment statement.</p>
+</li>
+<li>
+<p>Statements affect the program, <strong>but do not evaluate to values</strong>.</p>
+</li>
+</ul>
+<h3 id="function-definition">Function Definition</h3>
+<ol>
+<li>function : abstraction</li>
+</ol>
+<blockquote>
+<p>Execution rule for def Statements</p></blockquote>
+<ol>
+<li>Create a function with signature <!-- raw HTML omitted -->(<!-- raw HTML omitted -->)</li>
+<li>Set the body of that function to be everything indented after the first line</li>
+<li>Bind <!-- raw HTML omitted --> to that function in the current frame</li>
+</ol>
+<h3 id="function-call-eval--apply">Function Call (Eval &amp; Apply)</h3>
+<blockquote>
+<p>Procedure for calling/applying user-defined functions (for now)</p></blockquote>
+<ol>
+<li>Create a new environment frame</li>
+<li>Bind the function&rsquo;s parameters to its arguments in that frame</li>
+<li>Execute the body of the function in the new environment</li>
+</ol>
+<h3 id="pure--non-pure-functions-print-vs-return-none">Pure / Non-Pure Functions (Print vs Return, None)</h3>
+<ul>
+<li>The special value None represents nothing in Python</li>
+<li>A function that does not explicitly return a value will return None</li>
+<li>Careful: None is not displayed by the interpreter as the value of an expression</li>
+</ul>
+<blockquote>
+<p>Pure Functions
+just return values</p></blockquote>
+<blockquote>
+<p>Non-Pure Functions
+have side effects</p></blockquote>
+<h3 id="conditional-control-if-statement">Conditional Control (If-Statement)</h3>
+<blockquote>
+<p>Execution Rule for Conditional Statements:</p></blockquote>
+<p>Each header is considered in order</p>
+<ol>
+<li>Evaluate the header’s conditional expression if the header is not an else</li>
+<li>If the expression evaluates to true or the header is an else, execute the suite and skip the remaining headers</li>
+</ol>
+<blockquote>
+</blockquote>
+<p>要特别注意!有的语句前不该用elif/ else, 会导致被短路，只是检查条件的话，可以只用一个if就好了</p>
+<h3 id="boolean-expressions--short-circuiting">Boolean Expressions &amp; Short Circuiting</h3>
+<ul>
+<li>boolean contexts:
+False values in Python: False, None, 0, ‘’ (more to come)<br>
+True values: everything else
+<blockquote>
+</blockquote>
+</li>
+<li>special operators
+<!-- raw HTML omitted --> and <!-- raw HTML omitted --> and <!-- raw HTML omitted --> and &hellip;
+Evaluate to the first false value.
+If none are false, evaluates to the last expression
+<!-- raw HTML omitted --> or <!-- raw HTML omitted --> or <!-- raw HTML omitted --> or &hellip;
+Evaluate to first true value.
+If none are true, evaluates to the last expression
+not <!-- raw HTML omitted -->
+Evaluates to True if <!-- raw HTML omitted --> if a false value and False if <!-- raw HTML omitted --> is a true value</li>
+</ul>
+<blockquote>
+<p>返回的是操作数的值！不是True or False！</p></blockquote>
+<ul>
+<li>notice: <em><strong>Short-Circuiting</strong></em> —— avoid side-effect and error</li>
+</ul>
+<h3 id="iterative-control-while-statement">Iterative Control (While-Statement)</h3>
+<blockquote>
+<p>Execution Rule for While Statements:</p></blockquote>
+<ol>
+<li>Evaluate the header’s expression</li>
+<li>If it is a true value, execute the  (whole) suite, then return to step 1</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;斐波那契数列&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fib</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Compute the nth Fibonacci number, for N &gt;= 1&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    pred, curr <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>  <span style="color:#75715e"># 0th and 1st Fibonacci numbers</span>
+</span></span><span style="display:flex;"><span>    k <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>              <span style="color:#75715e"># curr is the kth Fibonacci number</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> k <span style="color:#f92672">&lt;</span> n:
+</span></span><span style="display:flex;"><span>        pred, curr <span style="color:#f92672">=</span> curr, pred <span style="color:#f92672">+</span> curr
+</span></span><span style="display:flex;"><span>        k <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> curr
+</span></span></code></pre></div><h3 id="error-messages">Error Messages</h3>
+<p><a href="/blog/sicp_note_before_mid/####-built-in-exceptation">见后</a></p>
+<hr>
+<h2 id="environment-diagrams">Environment Diagrams</h2>
+<blockquote>
+<p>A visual tool to keep track of bindings &amp; state of a computer program</p></blockquote>
+<ul>
+<li>A frame keeps track of variable-to-value bindings.</li>
+<li>Every call expression has a corresponding frame.</li>
+<li>Global, a.k.a(又名). the global frame, is the starting frame.
+It doesn&rsquo;t correspond to a specific call expression.</li>
+<li>Parent frames
+The parent of a function is the frame in which it was defined.
+If you can&rsquo;t find a variable in the current frame, you check it&rsquo;s parent, and so on. If you can&rsquo;t find the variable, <strong>NameError</strong></li>
+</ul>
+<h3 id="assignment-statements">Assignment Statements</h3>
+<p>bind variable to value</p>
+<h3 id="def-statements">Def Statements</h3>
+<p>Create a function value: in current frame
+<img src="/images/image-1.png" alt="alt text"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>func <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>(<span style="color:#f92672">&lt;</span>formal parameters<span style="color:#f92672">&gt;</span>) [parent<span style="color:#f92672">=&lt;</span>label<span style="color:#f92672">&gt;</span>] <span style="color:#75715e">#Its parent is the current frame.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Bind <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span> to the function value <span style="color:#f92672">in</span> the current frame
+</span></span></code></pre></div><h3 id="call-expressions">Call Expressions</h3>
+<p><img src="/images/image.png" alt="alt text"></p>
+<ol>
+<li>Add a local frame, titled with the <!-- raw HTML omitted --> of the function being applied.</li>
+<li>Copy the parent of the function (not always the current frame) to the local frame: [parent=<!-- raw HTML omitted -->]</li>
+<li>Bind the <!-- raw HTML omitted --> to the arguments in the local frame.</li>
+<li>Execute the body of the function in the environment that starts with the local frame</li>
+</ol>
+<h3 id="variable-lookup">Variable Lookup</h3>
+<blockquote>
+<p>Variable Lookup:</p></blockquote>
+<ol>
+<li>Lookup name in the current frame</li>
+<li>Lookup name in parent frame, its parent frame, etc..</li>
+<li>Stop at the global frame</li>
+<li>If not found, an error is thrown</li>
+</ol>
+<ul>
+<li>注意： 函数的parent frame 取决于def的环境，而不是调用的环境</li>
+<li>只能寻找并使用，若要修改则需要用nonlocal or global 声明</li>
+</ul>
+<blockquote>
+</blockquote>
+<ul>
+<li>区别函数传参：若使用而未改变传入参数，则若外部参数发生变化，内部参数也会随之发生变化；若改变了该参数，相当于在内部框架对参数进行重新赋值，不会改变外部参数的值，称为闭包，并且此后外部参数再发生变化不会影响内部参数</li>
+</ul>
+<blockquote>
+</blockquote>
+<ul>
+<li>求值（Evaluation）：是对表达式的求解和计算过程。
+应用（Apply）：是指 函数调用，即将一个函数和它的参数结合在一起并执行。
+当你调用一个函数时，首先会 求值 参数，接着 应用 函数。</li>
+</ul>
+<h3 id="lambda-expressions">Lambda Expressions</h3>
+<blockquote>
+<p>evaluate to functions !</p></blockquote>
+<p>Only the def statement gives the function an intrinsic name</p>
+<h4 id="notice-lambda-for-loop">notice: lambda for loop</h4>
+<p>如果你在循环中使用 lambda 函数时，要注意变量绑定的问题。通常，这种情况会导致 lambda 函数在创建时捕获的变量值是循环结束后的最终值。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>示例<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>fs <span style="color:#f92672">=</span> [<span style="color:#66d9ef">lambda</span>: i <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>)]
+</span></span><span style="display:flex;"><span>print([f() <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> fs])  <span style="color:#75715e"># [4, 4, 4, 4, 4]</span>
+</span></span></code></pre></div><p>原因：</p>
+<p>lambda 捕获的是外部的 i 变量，而不是 i 在每次迭代中的值。所以，在迭代完成后，i 的值是 4，因此所有的 lambda 函数最终都返回 4。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>解决方案<span style="color:#960050;background-color:#1e0010">：</span>
+</span></span><span style="display:flex;"><span>fs <span style="color:#f92672">=</span> [(<span style="color:#66d9ef">lambda</span> i: <span style="color:#66d9ef">lambda</span>: i)(i) <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>)]
+</span></span><span style="display:flex;"><span>print([f() <span style="color:#66d9ef">for</span> f <span style="color:#f92672">in</span> fs])  <span style="color:#75715e"># [0, 1, 2, 3, 4]</span>
+</span></span></code></pre></div><p>通过为每个 lambda 函数创建一个局部作用域，确保每个 lambda 捕获当前 i 的值。</p>
+<h3 id="recursion">Recursion</h3>
+<p><img src="/images/image-2.png" alt="alt text"></p>
+<ul>
+<li>The same function fact is called multiple times, each time solving a simpler problem</li>
+<li>All the frames share the <strong>same parent</strong> - only difference is the argument</li>
+<li>What n evaluates to depends upon the current environment（在每个frame中修改n的时候实现重新赋值，而不会因为其他frame而改变当前frame的n的值）</li>
+<li>执行顺序是从最末情况到base case开始创建frame，返回值是从base case得到的值回到最末层</li>
+</ul>
+<h3 id="lists">Lists</h3>
+<h4 id="box-and-poinger-notation">Box and Poinger Notation</h4>
+<p><img src="/images/image-5.png" alt="alt text"></p>
+<h4 id="lists-in-lists-in-lists">Lists in Lists in Lists</h4>
+<p>point to another list</p>
+<h3 id="default-arguments">Default Arguments</h3>
+<hr>
+<h2 id="higher-order-functions">Higher order functions</h2>
+<blockquote>
+<p>takes a function as an argument value, and/or
+returns a function as a return value(often defined locally)</p></blockquote>
+<ul>
+<li>use: <strong>Abstraction and Generalization!</strong> Give each function exactly one job, but make it apply to many related situations(分步进行的计算)
+<ol>
+<li>Generalize over different form of computation</li>
+<li>Helps remove repetitive segments of code</li>
+</ol>
+</li>
+</ul>
+<h3 id="lambda-expressions-vs-def-statements">Lambda Expressions vs. Def Statements</h3>
+<p><a href="/blog/sicp_note_before_mid/###lambda-expressions">见这里</a></p>
+<h3 id="function-design--generalization">Function Design &amp; Generalization</h3>
+<p>函数泛化，提高可读性、可维护性和扩展性，在不同情景保持复用性</p>
+<h3 id="functions-as-arguments">Functions As Arguments</h3>
+<p>eg. 常见的高阶函数：</p>
+<p>map()：对一个可迭代对象的每个元素应用一个函数。</p>
+<p>filter()：根据给定的条件过滤一个可迭代对象。</p>
+<p>reduce()：累积地应用一个二元函数到一个可迭代对象上。</p>
+<h3 id="functions-that-return-functions">Functions That Return Functions</h3>
+<p>常常用于构建 闭包（closures），在其中返回的函数使用外部函数的环境变量来执行任务。</p>
+<h3 id="function-currying">Function Currying</h3>
+<p>函数柯里化（Currying）是将接受多个参数的函数转化为一系列接受单一参数的函数的技术。换句话说，柯里化的过程是将一个多参数的函数分解成多个单参数的函数序列。</p>
+<p>函数柯里化使得你可以部分应用函数参数，即先提供部分参数，得到一个新的函数，等待剩余的参数。</p>
+<ul>
+<li>
+<p>部分应用：通过柯里化，你可以将一个多参数的函数转化为一系列单一参数的函数，这有助于代码的简化和模块化。</p>
+</li>
+<li>
+<p>函数链：柯里化可以链式调用，允许更流畅的表达式。</p>
+</li>
+</ul>
+<h3 id="self-reference">Self Reference</h3>
+<p>自我引用是指一个对象、函数或变量引用自己。在函数编程中，自我引用通常用于递归函数的实现，它允许函数在其内部调用自己来解决问题。</p>
+<p>自我引用常常出现在递归中，其中函数调用自身来逐步解决子问题，直到达到一个基本情况。</p>
+<hr>
+<h2 id="recursion-1">Recursion</h2>
+<ul>
+<li>means: solving problems with a naturally repeating structure - they are defined in terms of themselves</li>
+<li>It requires you to find patterns of smaller problems, and to define the smallest problem possible</li>
+</ul>
+<h3 id="function-abstraction">Function Abstraction</h3>
+<ul>
+<li>核心：隐藏复杂性，提供简洁的接口</li>
+</ul>
+<h3 id="definition-of-recursion">Definition of Recursion</h3>
+<blockquote>
+<p>递归是一种通过函数调用自身来解决问题的方法。递归的核心在于问题能被分解成更简单的子问题，且每次递归都会接近基础情况（base case）。</p></blockquote>
+<ul>
+<li>
+<p>基础情况：递归停止的条件，通常是最简单的情况，比如 n == 0 或 n == 1。</p>
+</li>
+<li>
+<p>递归情况：问题通过递归调用被分解成更小的子问题，最终汇总得到答案。</p>
+</li>
+</ul>
+<h3 id="structure-of-a-recursive-function">Structure of a Recursive Function</h3>
+<p><em><strong>Divide - Conquer - Combine</strong></em>
+递归函数通常遵循以下结构：</p>
+<p>分解（Divide）：将问题分解成一个或多个子问题。(多种情况or多个步骤)</p>
+<p>解决（Conquer）：解决更小的子问题，通常是递归地调用函数。</p>
+<p>合并（Combine）：将子问题的解合并，得到问题的最终解。</p>
+<p>递归结构的关键是将一个复杂的问题通过逐步减小问题的规模，最终解决最小的子问题。</p>
+<ul>
+<li>知道上个子问题的答案，可以怎样解决下一个问题？</li>
+<li>base case是什么？</li>
+</ul>
+<h3 id="tree-recursion--recursion-tree">Tree Recursion &amp; Recursion Tree</h3>
+<p>树状递归是指递归函数的调用图呈树状结构。每次递归调用都会产生多个子调用，类似树的分支。递归树的深度取决于递归的层数，广度取决于每一层的调用数</p>
+<h3 id="mutual-recursion">Mutual Recursion</h3>
+<p>互相递归是指两个或更多的函数互相调用对方来完成任务。这种递归结构通常在两个函数的行为依赖于彼此时出现。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_odd</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> is_even(n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_even</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> is_odd(n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><h3 id="iteration-vs-recursion">Iteration vs. Recursion</h3>
+<p>递归可以更清晰地表示分解问题的过程，尤其是当问题的结构天然适合分解时。</p>
+<p>迭代通常更高效，因为每次递归调用都要维护栈帧，而迭代只需要更新变量。</p>
+<h3 id="recursion-examples">Recursion Examples:</h3>
+<p>When learning to write recursive functions, put the base case/s first</p>
+<blockquote>
+</blockquote>
+<p><strong>注意考虑边界情况!</strong>
+eg.<strong>Count Partitions</strong>
+Goal: Count the number of ways to give out n ( &gt; 0) pieces of chocolate if nobody can have more than m (&gt; 0) pieces.</p>
+<ul>
+<li>If n is negative, then we cannot get to a valid partition</li>
+<li>If n is 0, then we have arrived at a valid partition</li>
+<li>If the largest piece we can use is 0, then we cannot get to a valid partition</li>
+</ul>
+<h4 id="sum-digits">Sum-Digits</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">sum_digits</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> n <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span> <span style="color:#f92672">+</span> sum_digits(n <span style="color:#f92672">//</span> <span style="color:#ae81ff">10</span>)
+</span></span></code></pre></div><h4 id="cascade级联">Cascade(级联)</h4>
+<p>级联递归指的是将多个函数或操作按顺序组合，每个函数的输出作为下一个函数的输入</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#从高位开始输出每位数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cascade</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>:
+</span></span><span style="display:flex;"><span>        print(n)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        cascade(n <span style="color:#f92672">//</span> <span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>        print(n <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;在递归函数中，通常会在每一次递归调用时暂停当前函数的执行，直到递归结束并返回&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#从低位开始输出每位数字</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">cascade</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>:
+</span></span><span style="display:flex;"><span>        print(n)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(n <span style="color:#f92672">%</span> <span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>        cascade(n <span style="color:#f92672">//</span> <span style="color:#ae81ff">10</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span></code></pre></div><h4 id="fibonacci">Fibonacci</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">fibonacci</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> n
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> fibonacci(n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">+</span> fibonacci(n <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span>)
+</span></span></code></pre></div><h4 id="count-partitions">Count-Partitions</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">count_partitions</span>(n):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> n <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">1</span>, n <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>        count <span style="color:#f92672">+=</span> count_partitions(n <span style="color:#f92672">-</span> i)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> count
+</span></span></code></pre></div><h3 id="if-time---speeding-up-recursion">If Time - Speeding Up Recursion</h3>
+<p>store some values that had already calculated</p>
+<h3 id="summery">SUMMERY</h3>
+<p>Recursion has three main components</p>
+<ol>
+<li>Base case/s: The simplest form of the problem</li>
+<li>Recursive call/s: Smaller version of the problem</li>
+<li>Use the solution to the smaller version of the problem to arrive at the solution to the original problem</li>
+</ol>
+<ul>
+<li>When working with recursion, use functional abstraction: assume the recursive call gives the correct result</li>
+<li>Tree recursion makes multiple recursive calls and explores different choices</li>
+<li>Use doctests and your own examples to help you figure out the simplest forms and how to make the problem smaller</li>
+</ul>
+<hr>
+<h2 id="sequence">Sequence</h2>
+<h3 id="sequence-abstraction">Sequence Abstraction</h3>
+<p>All sequences have finite length.
+Each element in a sequence has a discrete integer index.</p>
+<h3 id="sequence-operation-expression">Sequence Operation (Expression)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#### Get Item</span>
+</span></span><span style="display:flex;"><span>get the ith element <span style="color:#f92672">&lt;</span>seq<span style="color:#f92672">&gt;</span>[i]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#### Slicing</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">##### Slicing Creates New Values</span>
+</span></span><span style="display:flex;"><span>create a copy of the sequence <span style="color:#f92672">from</span> i to j  <span style="color:#f92672">&lt;</span>seq<span style="color:#f92672">&gt;</span>[i:j:skip]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#### Check Membership</span>
+</span></span><span style="display:flex;"><span>check <span style="color:#66d9ef">if</span> the value of <span style="color:#f92672">&lt;</span>expr<span style="color:#f92672">&gt;</span> <span style="color:#f92672">is</span> <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>seq<span style="color:#f92672">&gt;</span>  <span style="color:#f92672">&lt;</span>expr<span style="color:#f92672">&gt;</span> <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>seq<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#### Concatenate</span>
+</span></span><span style="display:flex;"><span>combine two sequences into a single sequence  <span style="color:#f92672">&lt;</span>s1<span style="color:#f92672">&gt;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">&lt;</span>s2<span style="color:#f92672">&gt;</span>
+</span></span></code></pre></div><h3 id="sequence-processing-statement">Sequence Processing (Statement)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#### Iterating</span>
+</span></span><span style="display:flex;"><span>For each element <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>seq<span style="color:#f92672">&gt;</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">1</span>) Bind it to <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#ae81ff">2</span>) Execute <span style="color:#f92672">&lt;</span>body<span style="color:#f92672">&gt;</span> 
+</span></span></code></pre></div><h4 id="unpacking">Unpacking</h4>
+<p><img src="/images/image-3.png" alt="alt text"></p>
+<h3 id="range">Range</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>range(<span style="color:#f92672">&lt;</span>start<span style="color:#f92672">&gt;</span>, <span style="color:#f92672">&lt;</span>end<span style="color:#f92672">&gt;</span>, <span style="color:#f92672">&lt;</span>skip<span style="color:#f92672">&gt;</span>)
+</span></span></code></pre></div><p><img src="/images/image-4.png" alt="alt text"></p>
+<h3 id="list">List</h3>
+<h4 id="list-comprehensions">List Comprehensions</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span>[<span style="color:#f92672">&lt;</span>expr<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">for</span> <span style="color:#f92672">&lt;</span>name<span style="color:#f92672">&gt;</span> <span style="color:#f92672">in</span> <span style="color:#f92672">&lt;</span>seq<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">&lt;</span>cond<span style="color:#f92672">&gt;</span>]
+</span></span></code></pre></div><h3 id="string">String</h3>
+<h4 id="string-literals-three-forms">String Literals (Three Forms)</h4>
+<p>Python 中有三种常见的字符串字面量表示形式：</p>
+<p>单引号： &lsquo;Hello&rsquo;</p>
+<p>双引号： &ldquo;Hello&rdquo;</p>
+<p>三引号： &lsquo;&lsquo;&lsquo;Hello&rsquo;&rsquo;&rsquo; 或 &ldquo;&ldquo;&ldquo;Hello&rdquo;&rdquo;&rdquo;
+三引号用于表示多行字符串，或者在字符串中包含引号时可以避免转义。</p>
+<h3 id="sequence-aggregation-sum-max--min-all--any">Sequence Aggregation (Sum, Max / Min, All / Any)</h3>
+<p><img src="/images/image-6.png" alt="alt text"></p>
+<h3 id="dictionary">Dictionary</h3>
+<p><img src="/images/image-7.png" alt="alt text"></p>
+<hr>
+<h2 id="data-abstraction-and-tree">Data abstraction and Tree</h2>
+<p>Compound values combine other values together
+Data abstraction lets us manipulate compound values as units
+e.g.
+有理数由分子（numerator）和分母（denominator）组成，是分数的精确表示形式，以整数对形式存在。常规表达进行除法运算，可能会丢失精确表示。
+so:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e"># 基础构造与选择器</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rational</span>(n, d): <span style="color:#66d9ef">return</span> [n, d]  <span style="color:#75715e"># 构造有理数（列表形式）</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">numer</span>(x): <span style="color:#66d9ef">return</span> x[<span style="color:#ae81ff">0</span>]  <span style="color:#75715e"># 获取分子</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">denom</span>(x): <span style="color:#66d9ef">return</span> x[<span style="color:#ae81ff">1</span>]  <span style="color:#75715e"># 获取分母</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 运算实现</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">mul_rational</span>(x, y): <span style="color:#66d9ef">return</span> rational(numer(x)<span style="color:#f92672">*</span>numer(y), denom(x)<span style="color:#f92672">*</span>denom(y))  <span style="color:#75715e"># 乘法</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add_rational</span>(x, y):
+</span></span><span style="display:flex;"><span>    nx, dx <span style="color:#f92672">=</span> numer(x), denom(x)
+</span></span><span style="display:flex;"><span>    ny, dy <span style="color:#f92672">=</span> numer(y), denom(y)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> rational(nx<span style="color:#f92672">*</span>dy <span style="color:#f92672">+</span> ny<span style="color:#f92672">*</span>dx, dx<span style="color:#f92672">*</span>dy)  <span style="color:#75715e"># 加法</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">print_rational</span>(x): print(numer(x), <span style="color:#e6db74">&#39;/&#39;</span>, denom(x))  <span style="color:#75715e"># 打印</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rationals_are_equal</span>(x, y): <span style="color:#66d9ef">return</span> numer(x)<span style="color:#f92672">*</span>denom(y) <span style="color:#f92672">==</span> numer(y)<span style="color:#f92672">*</span>denom(x)  <span style="color:#75715e"># 相等判断</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 最简形式优化（引入最大公约数）</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> math <span style="color:#f92672">import</span> gcd
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">rational</span>(n, d):
+</span></span><span style="display:flex;"><span>    g <span style="color:#f92672">=</span> gcd(n, d)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> [n<span style="color:#f92672">//</span>g, d<span style="color:#f92672">//</span>g]  <span style="color:#75715e"># 返回最简分数形式的有理</span>
+</span></span></code></pre></div><h3 id="abstraction-barrier-between-representation--use">Abstraction Barrier (between Representation &amp; Use)</h3>
+<ul>
+<li>
+<p>def: 将数据的表示和使用分开的一种设计思想。</p>
+</li>
+<li>
+<p>通过抽象屏障，可以使得数据的表示方式对外部用户隐藏，从而保护数据的结构，使其不容易受到外部代码的直接修改。
+把底层的数据结构和功能封装起来，使得使用者可以通过抽象接口来操作数据，而不需要理解内部的实现。</p>
+</li>
+<li>
+<p>表示：指的是数据的内部结构，如何在计算机中存储这些数据。</p>
+</li>
+<li>
+<p>使用：指的是外部代码与数据进行交互的方式，用户与数据的交互不关心数据的具体实现，只关心如何操作数据。</p>
+</li>
+</ul>
+<h3 id="constructor--selectors">Constructor &amp; Selectors</h3>
+<ul>
+<li>
+<p>Constructor（构造函数）是用于创建数据对象的函数，它定义了如何通过一些基本组件来构造出复杂的数据结构。</p>
+</li>
+<li>
+<p>Selectors（选择器）是用于从已构建的数据结构中提取信息的函数。它们允许用户访问数据结构中的元素或属性。</p>
+</li>
+<li>
+<p>break:
+过度依赖数据的内部实现，或者在外部代码中直接修改、访问类和数据结构的私有部分或底层细节</p>
+</li>
+</ul>
+<h3 id="abstract-data-type">Abstract Data Type</h3>
+<p>指数据结构和操作的组合
+e.g.</p>
+<ul>
+<li>
+<p>列表（List）：一个抽象数据类型，可以进行元素添加、删除、查找等操作，具体实现可以是动态数组、链表等。</p>
+</li>
+<li>
+<p>栈（Stack）：一种抽象数据类型，具有push()和pop()等操作，可以通过不同的实现方式（例如数组或链表）来实现。</p>
+</li>
+</ul>
+<h3 id="closure">Closure</h3>
+<p>指函数不仅能够访问其自己的局部变量，还能够访问外部函数的局部变量。闭包使得函数能够“记住”它被创建时的环境，即使外部函数已经返回，内部函数仍然能够访问外部函数的变量。</p>
+<h3 id="tree-abstraction">Tree Abstraction</h3>
+<ol>
+<li>递归描述（木质树视角）
+树由一个根（root）和一组分支（branches）组成。
+每个分支本身也是一棵树。
+零个分支的树称为叶子（leaf）。
+<ul>
+<li>Label：节点的值</li>
+<li>Branches：子节点或子树，是一个列表，其中每个元素表示一个子节点。</li>
+</ul>
+</li>
+<li>相对描述（家族树视角）
+树中每个位置称为节点（node）。
+每个节点有一个标签值（label value）。
+节点间存在父子关系（parent/child）。
+常根据节点位置描述值的关系</li>
+</ol>
+<p>树包含标签值和分支列表的结构，分支列表可为空（对应叶子）</p>
+<h3 id="tree-implementation">Tree Implementation</h3>
+<h4 id="constructor-tree">Constructor: tree</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tree</span>(label, branches<span style="color:#f92672">=</span>[]):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> branch <span style="color:#f92672">in</span> branches:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> is_tree(branch)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> [label] <span style="color:#f92672">+</span> list(branches)
+</span></span></code></pre></div><h4 id="selectors-label-branches">Selectors: label, branches</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">label</span>(tree):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tree[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">branches</span>(tree):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tree[<span style="color:#ae81ff">1</span>:]
+</span></span></code></pre></div><h4 id="convinence-functions-is_tree-is_leaf">Convinence Functions: is_tree, is_leaf</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_tree</span>(tree):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> type(tree) <span style="color:#f92672">!=</span> list <span style="color:#f92672">or</span> len(tree) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> branch <span style="color:#f92672">in</span> branches(tree):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> is_tree(branch):
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">False</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">is_leaf</span>(tree):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">not</span> branches(tree)
+</span></span></code></pre></div><h3 id="tree-processing-using-recursion">Tree Processing (using Recursion)</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">count_leaves</span>(t):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;统计树的叶子节点总数&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> is_leaf(t):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>  <span style="color:#75715e"># 叶子节点返回1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 递归计算每个分支的叶子数，求和聚合</span>
+</span></span><span style="display:flex;"><span>        branch_counts <span style="color:#f92672">=</span> [count_leaves(b) <span style="color:#66d9ef">for</span> b <span style="color:#f92672">in</span> branches(t)]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> sum(branch_counts)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">increment_leaves</span>(t):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;返回叶子节点标签递增1的新树&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> is_leaf(t):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> tree(label(t) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>)  <span style="color:#75715e"># 叶子节点标签+1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 递归处理每个分支，保留非叶子节点标签</span>
+</span></span><span style="display:flex;"><span>        bs <span style="color:#f92672">=</span> [increment_leaves(b) <span style="color:#66d9ef">for</span> b <span style="color:#f92672">in</span> branches(t)]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> tree(label(t), bs)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">increment</span>(t):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;返回所有节点标签递增1的新树&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 根节点标签+1，递归处理所有分支</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tree(label(t) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, [increment(b) <span style="color:#66d9ef">for</span> b <span style="color:#f92672">in</span> branches(t)])
+</span></span></code></pre></div><hr>
+<h2 id="mutablility">Mutablility</h2>
+<p>指对象在创建后是否可以改变其内容或状态，它们影响了对象的行为、存储方式、以及如何处理对象的引用</p>
+<h3 id="objects">Objects</h3>
+<p>对象 是程序中所有数据的基本单位。每个对象都有两个主要属性：身份（Identity）和 值（Value）。对象的身份由它的内存地址决定，而值则是对象所包含的数据。对象的行为通过其类型（如列表、字典、整数等）决定</p>
+<h3 id="mutable-objects">Mutable Objects</h3>
+<h4 id="lists-1">Lists</h4>
+<p>append()：向列表末尾添加元素。</p>
+<p>pop()：移除并返回列表的最后一个元素，或指定索引的元素。</p>
+<p>remove()：移除列表中第一个匹配的指定元素。</p>
+<p>extend()：将一个可迭代对象中的元素添加到列表末尾。</p>
+<p>Slice Assignment：通过切片语法修改列表中的部分元素。</p>
+<h3 id="dictionaries">Dictionaries</h3>
+<p>由键（key）和值（value）对组成的映射。字典允许通过键来查找对应的值，可以进行修改、删除或添加新的键值对。</p>
+<h3 id="mutate-with-functions">Mutate with Functions</h3>
+<p>由于 Python 中的可变对象是通过引用传递的，修改可变对象会影响原始对象</p>
+<h3 id="immutable-objects">Immutable Objects</h3>
+<p>Tuple, str, int, float
+可变仅指元组本身的元素绑定不可变，若元组包含可变元素（如列表），该可变元素的内容可被修改。</p>
+<h3 id="identity--equality">Identity &amp; Equality</h3>
+<ul>
+<li>Identity 指的是对象在内存中的位置，通常由 id() 函数来查看。
+同一性（is运算符）：判断两个表达式是否指向同一个对象。</li>
+<li>Equality 则是指对象的内容是否相等。对于可变对象，修改对象的内容不会改变对象的身份；而对于不可变对象，任何修改都需要创建一个新对象。
+同一对象必然值相等，但值相等的对象不一定是同一对象。
+相等性（==运算符）：判断两个表达式的值是否相等。</li>
+</ul>
+<h3 id="default-arguments-1">Default Arguments</h3>
+<p>函数的默认参数值是函数定义的一部分，仅在函数定义时创建一次，而非每次调用时重新生成。
+若默认参数是可变对象（如列表），多次调用函数会共享该对象，导致意外的状态累积。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">append_to_list</span>(value, lst<span style="color:#f92672">=</span>[]):  <span style="color:#75715e"># 注意：默认值是可变的</span>
+</span></span><span style="display:flex;"><span>    lst<span style="color:#f92672">.</span>append(value)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> lst
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(append_to_list(<span style="color:#ae81ff">1</span>))  <span style="color:#75715e"># 输出 [1]</span>
+</span></span><span style="display:flex;"><span>print(append_to_list(<span style="color:#ae81ff">2</span>))  <span style="color:#75715e"># 输出 [1, 2]，因为默认的列表是共享的</span>
+</span></span></code></pre></div><p>要避免这种情况，使用不可变的默认参数（例如 None）并在函数体内初始化：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">append_to_list</span>(value, lst<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> lst <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>        lst <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    lst<span style="color:#f92672">.</span>append(value)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> lst
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>print(append_to_list(<span style="color:#ae81ff">1</span>))  <span style="color:#75715e"># 输出 [1]</span>
+</span></span><span style="display:flex;"><span>print(append_to_list(<span style="color:#ae81ff">2</span>))  <span style="color:#75715e"># 输出 [2]，避免了共享同一个列表的问题</span>
+</span></span></code></pre></div><h3 id="mutable-functions-nonlocal">Mutable Functions (Nonlocal)</h3>
+<ul>
+<li>nonlocal 关键字用于修改外层函数作用域中的变量，而不是创建一个局部变量</li>
+<li>tip:
+<ol>
+<li>
+<p>如果外层函数的变量是可变的（例如列表、字典等），你可以修改它的内容，而无需使用 nonlocal。但如果你想直接对变量本身（例如赋值为一个新对象）进行修改，就需要使用 nonlocal。</p>
+</li>
+<li>
+<p>如果外层函数的变量是不可变的（例如整数、字符串、元组等），则即使使用 nonlocal 关键字，你也只能修改它的引用，而不能直接改变它的值（因为不可变对象的值一旦创建就无法修改）。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="unboundlocalerror">UnboundLocalError</h4>
+<p>当你在函数内部引用一个变量，并且该变量在局部作用域中没有声明时，Python 会抛出 UnboundLocalError 错误。这通常发生在试图在函数中修改局部变量时，而没有明确声明该变量为 nonlocal 或 global。</p>
+<h4 id="mutate-mutable-values-wihout-nonlocal">Mutate Mutable Values wihout Nonlocal</h4>
+<p>如果一个变量是可变的且位于外部作用域，你可以在内部函数中修改它的内容，而不必使用 nonlocal</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py" data-lang="py"><span style="display:flex;"><span><span style="color:#75715e">#嵌套列表</span>
+</span></span><span style="display:flex;"><span>t <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+</span></span><span style="display:flex;"><span>t[<span style="color:#ae81ff">1</span>:<span style="color:#ae81ff">3</span>] <span style="color:#f92672">=</span> [t]
+</span></span><span style="display:flex;"><span>t<span style="color:#f92672">.</span>extend(t)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>t <span style="color:#f92672">=</span> [[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>], [<span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>]]
+</span></span><span style="display:flex;"><span>t[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>append(t[<span style="color:#ae81ff">1</span>:<span style="color:#ae81ff">2</span>])  
+</span></span></code></pre></div><hr>
+<h2 id="iterable">Iterable</h2>
+<p><strong>Iterable</strong> 是任何能够逐个返回其成员的对象。它包括序列类型（如列表、字符串、元组）以及非序列类型（如字典）。</p>
+<h3 id="iterators-iter--next">Iterators (iter &amp; next)</h3>
+<ul>
+<li><strong>iter(iterable)</strong>：此函数返回一个迭代器(iterator)，它可以逐个遍历<strong>可迭代对象</strong>(iterable)的元素。可以把它理解为一本书的书签，从书的前面开始。</li>
+<li><strong>next(iterator)</strong>：此函数返回<strong>迭代器</strong>的下一个元素，并将书签移动到下一页。迭代器会记住它的当前位置。如果当前位置已经是书的结尾，它会抛出一个错误。</li>
+</ul>
+<h3 id="views-of-a-dictionary-keys--values">Views of a Dictionary (keys &amp; values)</h3>
+<p>字典及其<strong>键</strong>(keys)、<strong>值</strong>(values)和<strong>项</strong>(items)都是可迭代对象。</p>
+<ul>
+<li><strong><code>d.keys()</code></strong>：返回字典<strong>键</strong>的可迭代视图。</li>
+<li><strong><code>d.values()</code></strong>：返回字典<strong>值</strong>的可迭代视图。</li>
+<li><strong><code>d.items()</code></strong>：返回字典<strong>键值对</strong>的可迭代视图。</li>
+</ul>
+<h3 id="built-in-functions-for-iteration">Built-in Functions for Iteration</h3>
+<ul>
+<li><strong>map(func, iterable)</strong>：对可迭代对象中的每个元素应用指定的函数。</li>
+<li><strong>filter(func, iterable)</strong>：过滤可迭代对象中的元素，保留通过<strong>函数</strong>判断为<strong>真</strong>的元素。</li>
+<li><strong>zip(first_iter, second_iter)</strong>：将两个或多个可迭代对象中的元素按顺序组成元组返回。</li>
+<li><strong>reversed(sequence)</strong>：返回一个反向迭代器，逐个遍历<strong>序列</strong>中的元素。</li>
+</ul>
+<h3 id="create-iterators">Create Iterators</h3>
+<p>这些函数允许我们创建迭代器：</p>
+<ul>
+<li><strong>map</strong>：将一个函数应用到每个元素。</li>
+<li><strong>filter</strong>：根据一个<strong>条件函数</strong>筛选元素。</li>
+<li><strong>zip</strong>：将两个可迭代对象的元素按顺序组成元组。</li>
+<li><strong>reversed</strong>：创建一个反向遍历<strong>序列</strong>的迭代器。</li>
+</ul>
+<h3 id="view-iterators">View Iterators</h3>
+<p>这些函数将<strong>可迭代对象</strong>转换为不同的数据结构视图：</p>
+<ul>
+<li><strong>list(iterable)</strong>：将可迭代对象转换为列表。</li>
+<li><strong>tuple(iterable)</strong>：将可迭代对象转换为元组。</li>
+<li><strong>sorted(iterable)</strong>：将可迭代对象排序后返回一个新的列表。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Example of iterators and map function</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">naturals</span>():
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#66d9ef">True</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">yield</span> x
+</span></span><span style="display:flex;"><span>        x <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> nats <span style="color:#f92672">=</span> naturals()
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> next(nats)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> next(nats)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> nats1, nats2 <span style="color:#f92672">=</span> naturals(), naturals()
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&gt;&gt;&gt;</span> [next(nats1) <span style="color:#f92672">*</span> next(nats2) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">5</span>)]
+</span></span><span style="display:flex;"><span>[<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">9</span>, <span style="color:#ae81ff">16</span>]  <span style="color:#75715e"># Squares the first 5 natural numbers</span>
+</span></span></code></pre></div><h3 id="generators-and-generator-functions">Generators and Generator Functions</h3>
+<ul>
+<li><strong>Generators</strong>：生成器是通过调用生成器函数自动创建的迭代器。它使用<code>yield</code>关键字逐个返回值，并保持函数的状态，以便后续调用<code>next()</code>时继续执行。</li>
+<li><strong>Generator Functions</strong>：生成器函数包含一个或多个<code>yield</code>语句。与普通函数不同，生成器函数在每次<code>yield</code>时返回一个值，而不是一次性返回。</li>
+</ul>
+<h4 id="yield-value"><code>yield</code> value</h4>
+<p><code>yield</code>关键字用于生成一个值，并挂起函数的执行，之后可以继续执行。</p>
+<h4 id="yield-from-iterator--iterable"><code>yield from iterator / iterable</code></h4>
+<p><code>yield from</code>语法用于将另一个迭代器或可迭代对象的所有值逐个返回。它简化了代码，在需要将值传递给另一个生成器或可迭代对象时非常有用。</p>
+<h4 id="generators-representing-infinite-sequences">Generators Representing Infinite Sequences</h4>
+<p>生成器可以表示无限序列。例如，上述的<code>naturals()</code>函数生成一个从0开始的无限自然数序列。</p>
+<hr>
+<h3 id="exception">Exception</h3>
+<p><strong>Exception</strong> 是程序在运行时遇到的错误，会打断程序的正常执行流程。</p>
+<table>
+  <thead>
+      <tr>
+          <th>中文名</th>
+          <th>英文名</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>异常</td>
+          <td><strong>Exception</strong></td>
+          <td>程序运行时检测到的错误，会中断当前代码的正常执行流程。</td>
+      </tr>
+      <tr>
+          <td>抛出异常</td>
+          <td><strong>Raise an Exception</strong></td>
+          <td>使用 <code>raise</code> 语句主动触发异常。</td>
+      </tr>
+      <tr>
+          <td>捕获异常</td>
+          <td><strong>Catch / Handle Exception</strong></td>
+          <td>使用 <code>try...except</code> 捕获并处理异常，防止程序崩溃。</td>
+      </tr>
+      <tr>
+          <td>异常传播</td>
+          <td><strong>Exception Propagation</strong></td>
+          <td>如果当前作用域未捕获异常，异常会沿着调用栈往上层传递，直到被捕获或导致程序终止。</td>
+      </tr>
+      <tr>
+          <td>异常对象</td>
+          <td><strong>Exception Object</strong></td>
+          <td>每个异常都是一个类的实例，包含错误类型、信息、堆栈信息等。</td>
+      </tr>
+      <tr>
+          <td>异常类层级结构</td>
+          <td><strong>Exception Hierarchy</strong></td>
+          <td>Python 中所有异常都是从 <code>BaseException</code> 类继承而来的一棵树。</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="built-in-exceptions">Built-in Exceptions</h4>
+<p>Python提供了多个内建异常，每种异常用于不同类型的错误。</p>
+<table>
+  <thead>
+      <tr>
+          <th>异常名</th>
+          <th>英文说明</th>
+          <th>常见触发场景</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>SyntaxError</code></td>
+          <td>Syntax error</td>
+          <td>语法错误（代码结构非法）</td>
+      </tr>
+      <tr>
+          <td><code>IndentationError</code></td>
+          <td>Indentation error</td>
+          <td>缩进错误</td>
+      </tr>
+      <tr>
+          <td><code>NameError</code></td>
+          <td>Undefined variable</td>
+          <td>使用了未定义的变量</td>
+      </tr>
+      <tr>
+          <td><code>TypeError</code></td>
+          <td>Type mismatch</td>
+          <td>类型不兼容（如把字符串加到整数上）</td>
+      </tr>
+      <tr>
+          <td><code>ValueError</code></td>
+          <td>Invalid value</td>
+          <td>值类型正确但取值非法（如 <code>int(&quot;abc&quot;)</code>）</td>
+      </tr>
+      <tr>
+          <td><code>IndexError</code></td>
+          <td>Index out of range</td>
+          <td>列表索引越界</td>
+      </tr>
+      <tr>
+          <td><code>KeyError</code></td>
+          <td>Missing dictionary key</td>
+          <td>字典中查找不存在的键</td>
+      </tr>
+      <tr>
+          <td><code>AttributeError</code></td>
+          <td>Missing attribute</td>
+          <td>对象没有该属性或方法</td>
+      </tr>
+      <tr>
+          <td><code>ZeroDivisionError</code></td>
+          <td>Division by zero</td>
+          <td>除以零错误</td>
+      </tr>
+      <tr>
+          <td><code>IOError</code> / <code>OSError</code></td>
+          <td>Input/Output error</td>
+          <td>文件或系统操作失败（如找不到文件）</td>
+      </tr>
+      <tr>
+          <td><code>FileNotFoundError</code></td>
+          <td>File not found</td>
+          <td>打开不存在的文件</td>
+      </tr>
+      <tr>
+          <td><code>ImportError</code> / <code>ModuleNotFoundError</code></td>
+          <td>Import error</td>
+          <td>模块导入失败</td>
+      </tr>
+      <tr>
+          <td><code>RuntimeError</code></td>
+          <td>Generic runtime error</td>
+          <td>运行时检测到其他异常情况</td>
+      </tr>
+      <tr>
+          <td><code>RecursionError</code></td>
+          <td>Maximum recursion depth exceeded</td>
+          <td>递归层数太深</td>
+      </tr>
+      <tr>
+          <td><code>AssertionError</code></td>
+          <td>Assertion failed</td>
+          <td>断言失败（<code>assert</code>）</td>
+      </tr>
+      <tr>
+          <td><code>StopIteration</code></td>
+          <td>Iterator finished</td>
+          <td>迭代器结束（由迭代协议内部抛出）</td>
+      </tr>
+      <tr>
+          <td><code>StopAsyncIteration</code></td>
+          <td>Async iterator finished</td>
+          <td>异步迭代结束</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="exception-mechanism">Exception Mechanism</h4>
+<ul>
+<li><strong>Detection (发现错误)</strong>: 错误会在程序执行时被发现。</li>
+<li><strong>Raising (raise)</strong>: 可以通过<code>raise</code>关键字显式地抛出错误。</li>
+<li><strong>Propagation (异常传播)</strong>: 如果当前作用域没有捕获异常，异常会沿着调用栈向上传播，直到被捕获或导致程序终止。</li>
+<li><strong>Catching (捕获)</strong>: 错误可以使用<code>try</code>/<code>except</code>块进行捕获。</li>
+<li><strong>Else (无异常时执行)</strong>: 如果<code>try</code>块没有抛出异常，则执行<code>else</code>块。</li>
+<li><strong>Finally (始终执行)</strong>: 无论是否发生异常，<code>finally</code>块总是会执行。</li>
+</ul>
+<h4 id="raise-syntax"><code>raise</code> Syntax</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">raise</span> <span style="color:#f92672">&lt;</span>expression<span style="color:#f92672">&gt;</span>  <span style="color:#75715e"># &lt;expression&gt; 必须是一个异常对象</span>
+</span></span></code></pre></div><h4 id="example">Example</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">divide</span>(a, b):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">assert</span> b <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#34;Divider cannot be zero&#34;</span>
+</span></span><span style="display:flex;"><span>        result <span style="color:#f92672">=</span> a <span style="color:#f92672">/</span> b
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">AssertionError</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Assertion failed:&#34;</span>, e)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">ZeroDivisionError</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Caught division error:&#34;</span>, e)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Result is:&#34;</span>, result)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">finally</span>:
+</span></span><span style="display:flex;"><span>        print(<span style="color:#e6db74">&#34;Computation ended.&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>divide(<span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">0</span>)
+</span></span></code></pre></div><p>Output:</p>
+<pre tabindex="0"><code>Assertion failed: Divider cannot be zero
+Computation ended.
+</code></pre></section>
+
+  
+  
+  <div class="paginator">
+    
+    <a class="prev" href="https://cloudymount789.github.io/blog/politics/">
+      <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.77086 21.1546C11.0491 22.698 21.4339 21.7773 21.4339 16.3608V4.63375C21.4339 3.93962 21.3581 3.30535 21.1917 2.76787M3.77086 21.1546C1.9934 20.7777 0.973585 18.7264 1.08749 16.688C1.2668 13.479 1.15721 9.43135 1.00513 6.21507C0.87809 3.52811 3.12891 1.16316 5.51029 1.25008C9.76594 1.40542 15.377 1.20229 18.7912 1.00542C20.0864 0.930734 20.8406 1.63385 21.1917 2.76787M3.77086 21.1546C4.56586 21.4723 5.49168 21.7879 6.5 22.0658M21.1917 2.76787C23.1097 4.18217 23.13 12.4191 22.9004 16.3608C20.8478 24.0194 12.3061 23.6662 6.5 22.0658M21.1917 2.76787C21.7612 4.51192 22.7203 9.67216 22 16.3608C21.2797 23.0494 11.3665 22.9511 6.5 22.0658M9.94496 9C9.28897 9.61644 7.63215 10.997 6.04814 11.7966C5.98257 11.8297 5.98456 11.9753 6.05061 12.0063C7.05496 12.4779 8.92941 13.9264 9.94496 15M6.44444 11.9667C8.86549 12.0608 14 12 16 11" stroke="currentColor" stroke-linecap="round"/>
+      </svg>
+      <span>思政重点</span></a>
+    
+    
+  </div>
+  
+
+  
+
+
+  
+  
+</article>
+
+
+        </div><footer class="footer">
+  <p>&copy; 2026 <a href="https://cloudymount789.github.io/">CloudyMount</a>
+    Powered by
+    <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>
+    <a href="https://github.com/guangzhengli/hugo-theme-ladder" rel="noopener" target="_blank">Ladder</a>
+️  </p>
+</footer>
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.5376 22.7916C11.0152 22.7207 22.5795 21.1781 22.0978 10.4211C22.0536 9.43274 21.9303 8.53367 21.7387 7.71865M10.5376 22.7916C16.876 22.3728 20.0969 19.8899 21.5383 16.9142M10.5376 22.7916C9.7707 22.9055 8.97982 22.8964 8.19743 22.7725M21.7387 7.71865C21.4988 6.69828 21.1518 5.80967 20.7188 5.04257M21.7387 7.71865C22.6022 10.1105 23.0542 13.7848 21.5383 16.9142M20.7188 5.04257C17.1684 -1.24629 7.83127 0.632493 4.27577 5.04257C2.88063 6.77451 -0.0433281 11.1668 1.38159 16.6571C2.27481 20.0988 5.17269 22.2936 8.19743 22.7725M20.7188 5.04257C22.0697 6.9404 24.0299 11.3848 22.3541 15.4153M21.5383 16.9142C21.8737 16.4251 22.1428 15.9235 22.3541 15.4153M8.19743 22.7725C12.1971 23.4683 20.6281 22.971 22.3541 15.4153M14 10.945C13.3836 10.289 12.003 8.63215 11.2034 7.04814C11.1703 6.98257 11.0247 6.98456 10.9937 7.05061C10.5221 8.05496 9.07362 9.92941 8 10.945M11.0333 7.44444C10.9392 9.86549 11 15 12 17" stroke="currentColor" stroke-linecap="round"/>
+    </svg>
+</a>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'Copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'Copied';
+            setTimeout(() => {
+                copybutton.innerHTML = 'Copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+        codeblock.parentNode.appendChild(copybutton);
+    });
+</script></main>
+    </body>
+  
+  <script src="/main.min.6bb26b69159420159c74dc9e097b06a578ed2b68c701466a91a44a9632d851bd0af167a1b30012387b4c512b48ad9ad4d3394e04d77ae38d57e1920fe4ed34fe.js" integrity="sha512-a7JraRWUIBWcdNyeCXsGpXjtK2jHAUZqkaRKljLYUb0K8WehswASOHtMUStIrZrU0zlOBNd6441X4ZIP5O00/g==" crossorigin="anonymous" defer></script></html>

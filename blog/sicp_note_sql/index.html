@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SICP_SQL_笔记</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Ladder@摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）SQL部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+    <meta name="author" content="CloudyMount">
+    <link rel="canonical" href="https://cloudymount789.github.io/blog/sicp_note_sql/">
+
+    <link rel="alternate" type="application/rss+xml" href="https://cloudymount789.github.io//index.xml" title="CloudyMount">
+
+    
+
+
+    <meta property="og:url" content="https://cloudymount789.github.io/blog/sicp_note_sql/">
+  <meta property="og:site_name" content="CloudyMount">
+  <meta property="og:title" content="SICP_SQL_笔记">
+  <meta property="og:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）SQL部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2026-01-03T12:48:01+08:00">
+    <meta property="article:modified_time" content="2026-01-03T12:48:01+08:00">
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="SICP_SQL_笔记">
+  <meta name="twitter:description" content="摘要
+本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）SQL部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Blogs",
+      "item": "https://cloudymount789.github.io/blog/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "SICP_SQL_笔记",
+      "item": "https://cloudymount789.github.io/blog/sicp_note_sql/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "SICP_SQL_笔记",
+  "name": "SICP_SQL_笔记",
+  "description": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）SQL部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "摘要\n本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）SQL部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。\nSQL 数据库查询(Structured Query Language) 注意事项 句末记得加分号! 记得所有的字符串都要加\"\"! SQL中的中的取等不用==!用=即可!! 审清楚题干!! 主题 1：声明式编程与 SQL 基础 (Declarative Programming \u0026 SQL Basics) 主题概述 SQL 是一种声明式语言 (Declarative Language)。与传统的命令式编程（如 Python，需分步指明“怎么做”）不同，声明式编程只需告诉计算机“想要什么”，由解释器决定如何执行。\n核心概念 1. 数据库结构 (Database Structure) 表 (Table)：存储数据的核心单元，由固定数量的列 (Columns) 和多行数据条目 (Rows/Records) 组成。 列 (Column)：具有特定的名称和描述。 行 (Row)：为每一列提供具体的值。 2. 创建表 在 SQL 中，可以通过组合已有的数据或从头定义来创建表：\n使用 SELECT 创建的是临时数据行,用于展示给用户看而不存储 使用CREATE TABLE AS存储数据 使用 UNION 将多个 SELECT 语句连接起来,创建多行。 语法示例： CREATE TABLE dogs AS SELECT \"abraham\" AS name, \"long\" AS fur UNION SELECT \"barack\", \"short\" UNION SELECT \"clinton\", \"long\"; 3. 选择数据 (The SELECT Statement) 最基本的查询结构，用于从表中提取特定数据。\nSELECT会做什么? 无FROM: 可以制造单行,用逗号将同一行内不同列的内容隔开多用于CREATE中;可以用AS 取名作为一列的列名称 有FROM: 从FROM的TABLE中用列名称把一列拿出来(即列名称会被evaluate成为多个行的值) SELECE始终决定了列规模 SELECT * FROM选择全部 语法顺序：SELECT [列名] FROM [表名] WHERE [过滤条件] ORDER BY [排序方式] LIMIT [数量]; WHERE 关键字：用于根据布尔条件过滤行。(输入表的行子集(subset of the rows of the input table)) ORDER BY 关键字：对结果进行排序（ASC 升序，默认；DESC 降序）。 LIMIT关键字: 限制输出行数 4. SELECT语句中的算术(Arithmetic) -\u003e 直接使用运算符号\nCREATE TABLE restaurant AS SELECT 101 AS table, 2 AS single, 2 AS couple UNION SELECT 102 , 0 , 3 UNION SELECT 103 , 3 , 1; sqlite\u003e SELECT table, single + 2 * couple AS total FROM restaurant; 主题 2：连接与别名 (Joins \u0026 Aliasing) 主题概述 连接 (Join) 允许我们组合多个表的数据。当我们连接两个表时，结果是一个新表，其中包含原始表行之间的每一种可能组合（笛卡尔积）。\n核心概念 (Core Concepts) 1. 连接表 (Joining Tables) 语法：在 FROM 子句中列出多个表名，用逗号分隔。 SELECT * FROM parents, dogs WHERE child = name; 2. 别名 (Aliasing) 当连接同一个表两次（Self-join）或多个表有重名列时，必须使用别名。\n语法：使用 AS 关键字（可省略）。 作用：消除歧义。 示例：寻找所有兄弟姐妹（拥有共同父母的两个孩子）： SELECT a.child AS first, b.child AS second FROM parents AS a, parents AS b WHERE a.parent = b.parent AND a.child \u003c b.child; *注意：使用 `a.child \u003c b.child` 是为了去除重复项并避免自己与自己配对。* 扩展: 显式连接 -\u003e JOIN ON语句 使用显式语句连接,使表格连接更清晰明了\nWhy JOIN? 数据库中的表通常是为了消除冗余而拆分的（例如：一张表存学生信息，一张表存班级信息）。连接 (Join) 的目的就是根据两个表之间的公共列（通常是 ID），将分散的数据重新组合成一行。\nCS61A 风格: 隐式连接 (Implicit Join)\n这是 PPT 中主要演示的方法。它实际上是先做笛卡尔积（Cross Join），然后用 WHERE 过滤。\n语法：在 FROM 子句中用逗号分隔表名，在 WHERE 子句中指定连接条件。 示例： SELECT name, course FROM students, enrollments WHERE students.sid = enrollments.sid; 现代标准风格: 显式连接 (Explicit JOIN)\n这是更推荐的写法，语义更清晰，将“连接逻辑”和“过滤逻辑”分开了。\n语法：使用 JOIN 关键字，并用 ON 指定连接条件。 示例： SELECT name, course FROM students INNER JOIN enrollments ON students.sid = enrollments.sid; 常见的连接类型 (Types of Joins) 为了演示，假设我们有两张表：\nTable A (Students): {1: 'Alice', 2: 'Bob', 3: 'Charlie'} Table B (Grades): {1: 'A', 2: 'B', 4: 'C'} (注意：Charlie 没有成绩，ID 4 的成绩属于不存在的学生) (1) 内连接 (INNER JOIN) 定义：只保留两个表中都存在匹配关系的行（交集）。 CS61A 写法：FROM A, B WHERE A.id = B.id 标准写法：FROM A INNER JOIN B ON A.id = B.id 结果：Alice (A), Bob (B)。(Charlie 和 ID 4 被丢弃) (2) 左连接 (LEFT OUTER JOIN) 定义：保留左表（FROM 后的表）的所有行。如果右表没有匹配，右表的列显示为 NULL。\n标准写法：FROM A LEFT JOIN B ON A.id = B.id\n结果：\nAlice - A\nBob - B\nCharlie - NULL (因为 Charlie 在左表，但右表没成绩)\n注：SQLite 支持 LEFT JOIN，但不支持 RIGHT JOIN。\n(3) 交叉连接 (CROSS JOIN / Cartesian Product) 每一行 A 与每一行 B 配对，产生所有可能的组合。 在输出中连接string使用|| 主题 3：聚合与分组 (Aggregation \u0026 Grouping) 主题概述 聚合函数允许我们对一组行执行操作并返回单个值，通常与分组配合使用。\n核心概念 (Core Concepts) 1. 聚合函数 (Aggregate Functions) COUNT(*)：计算行数。 SUM(col)：求某一列的和。(注:求行的值需要使用多个+运算符) MIN(col) / MAX(col)：某一列中的最小值/最大值。 AVG(col)：某一列的平均值。 2. 分组查询 (GROUP BY) GROUP BY 后表达式求值结果相同被化为同一组,表达式中可以使用多个列名和运算符 作用：将结果集划分为多个组，对每个组分别应用聚合函数。 HAVING 过滤：用于过滤组，类似于 WHERE 过滤行。 示例：统计每种毛发类型的狗的数量，且只显示数量大于 1 的组： SELECT fur, COUNT(*) FROM dogs GROUP BY fur HAVING COUNT(*) \u003e 1; 主题 4：修改表记录 (Modifying Records) 主题概述 除了查询，SQL 还提供了创建空表及增删改查记录的语句。\n核心概念 (Core Concepts) 1. 表的生命周期 CREATE TABLE：创建一个没有初始数据的空表。\nCREATE TABLE [name]([column_defs]);\nDROP TABLE：从数据库中永久删除表。\nDROP TABLE [IF EXISTS] [name];\n例: CREATE TABLE parents(parent, child); CREATE TABLE dogs(name, fur, phrase DEFAULT 'woof'); DROP TABLE dogs; DROP TABLE IF EXISTS parents; 2. 数据操作 (DML) INSERT：插入新行。 INSERT INTO [table]([columns]) VALUES([values]), ([values]); e.g. INSERT INTO dogs(name, fur) VALUES('fillmore', 'curly'); INSERT INTO dogs VALUES('delano', 'long', 'hi!'); INSERT INTO dogs(fur, phrase) VALUES('curly', 'bark'); UPDATE：修改现有记录。 UPDATE [table] SET [column] = [expression] WHERE [condition]; e.g. UPDATE dogs SET phrase = 'WOOF' WHERE fur = 'curly'; DELETE：删除现有行。 DELETE FROM [table] WHERE [condition]; e.g. DELETE FROM dogs WHERE name = 'herbert'; 做题技巧 确定输入,输出,一列一列join 有时可创建辅助表来帮助思考(FROM后面加括号,写一串SELECT语句) ",
+  "wordCount" : "556",
+  "inLanguage": "zh",
+  "datePublished": "2026-01-03T12:48:01+08:00",
+  "dateModified": "2026-01-03T12:48:01+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "CloudyMount"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://cloudymount789.github.io/blog/sicp_note_sql/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "CloudyMount",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://cloudymount789.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+    <link rel="icon" href="/images/LittleElysia.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/LittleElysia.png">
+
+<link rel="manifest" href="/images/LittleElysia.png">
+    
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+
+    
+    
+    <link rel="stylesheet" href="/css/main.min.ec28f09e946fc0df77c187fcd0d0ebde58fca6de8efb8e1620f3d45c32d4da88.css" integrity="sha256-7CjwnpRvwN93wYf80NDr3lj8pt6O&#43;44WIPPUXDLU2og=" crossorigin="anonymous" media="screen" />
+
+    
+    <link rel="stylesheet" href="/scss/highlight/github-dark.min.min.66034289ee9a113219a2c4aae0a8bd2095ab255c832a42efcf5863f10814e7a1.css" />
+
+    
+    <script src="/js/highlight.min.min.04ed3315a5c3f66e19fbfc8c933577697fe73787c63333adc024c4fabed580bc.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <script>(()=>{var t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,e=localStorage.getItem("theme");t&&e===null&&(localStorage.setItem("theme","dark"),document.documentElement.setAttribute("data-dark-mode","")),t&&e==="dark"&&document.documentElement.setAttribute("data-dark-mode",""),e==="dark"&&document.documentElement.setAttribute("data-dark-mode","")})()</script>
+    </head>
+<body>
+      <main class="wrapper"><nav class="navigation">
+    <section class="container">
+        <a class="navigation-brand" href="/">
+            主页
+        </a>
+        <input type="checkbox" id="menu-toggle" />
+        <label class="menu-button float-right" for="menu-toggle">
+            <span></span><span></span><span></span>
+        </label>
+        
+        <ul class="navigation-list" id="navigation-list">
+            
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/blog/">文章</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/archive/">归档</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/contact/">联系</a>
+            </li>
+            
+            <li class="navigation-item navigation-menu">
+                <a class="navigation-link" href="/xx/">网站统计</a>
+            </li>
+            
+            
+
+            <li class="navigation-item menu-separator">
+                <span>|</span>
+            </li>
+
+            
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://github.com/cloudymount789"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+            </li>
+            
+            <li class="navigation-item navigation-social">
+                <a class="navigation-link" href="https://space.bilibili.com/1369055152?spm_id_from=333.1007.0.0"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tv"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg></a>
+            </li>
+            
+            
+
+            <li class="navigation-item navigation-dark">
+                <button id="mode" type="button" aria-label="toggle user light or dark theme">
+                    <span class="toggle-dark"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></span>
+                    <span class="toggle-light"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg></span>
+                </button>
+            </li>
+
+            
+        </ul>
+        
+    </section>
+</nav>
+<div id="content">
+<article class="blog-single">
+  <header class="blog-title">
+    <h1>SICP_SQL_笔记</h1>
+  </header>
+
+  <p>
+  <small>
+    2026年1月3日&nbsp;· 556 字&nbsp;· 3 分钟</small>
+
+  
+<p>
+
+  <div class="blog-toc">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#注意事项">注意事项</a></li>
+    <li><a href="#主题-1声明式编程与-sql-基础-declarative-programming--sql-basics">主题 1：声明式编程与 SQL 基础 (Declarative Programming &amp; SQL Basics)</a>
+      <ul>
+        <li><a href="#主题概述">主题概述</a></li>
+        <li><a href="#核心概念">核心概念</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-2连接与别名-joins--aliasing">主题 2：连接与别名 (Joins &amp; Aliasing)</a>
+      <ul>
+        <li><a href="#主题概述-1">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts">核心概念 (Core Concepts)</a></li>
+        <li><a href="#扩展-显式连接---join-on语句">扩展: 显式连接 -&gt; JOIN ON语句</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-3聚合与分组-aggregation--grouping">主题 3：聚合与分组 (Aggregation &amp; Grouping)</a>
+      <ul>
+        <li><a href="#主题概述-2">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts-1">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+    <li><a href="#主题-4修改表记录-modifying-records">主题 4：修改表记录 (Modifying Records)</a>
+      <ul>
+        <li><a href="#主题概述-3">主题概述</a></li>
+        <li><a href="#核心概念-core-concepts-2">核心概念 (Core Concepts)</a></li>
+      </ul>
+    </li>
+    <li><a href="#做题技巧">做题技巧</a></li>
+  </ul>
+</nav>
+  </div>
+
+  <section class="blog-content"><p>摘要</p>
+<p>本文为《计算机程序的构造和解释》（SICP，CS61A 南大引进版）SQL部分课程核心笔记，聚焦程序设计的底层逻辑与核心思想，旨在帮助学习者搭建“知其然更知其所以然”的编程认知框架。适合正在学习 CS61A 课程的学习者梳理知识体系，也可作为编程入门者夯实基础、理解程序设计本质的参考资料。</p>
+<h1 id="sql-数据库查询structured-query-language">SQL 数据库查询(Structured Query Language)</h1>
+<h2 id="注意事项">注意事项</h2>
+<ul>
+<li><strong>句末记得加分号!</strong></li>
+<li><strong>记得所有的字符串都要加<code>&quot;&quot;</code>!</strong></li>
+<li><strong>SQL中的<!-- raw HTML omitted -->中的取等不用<code>==</code>!用<code>=</code>即可!!</strong></li>
+<li>审清楚题干!!</li>
+</ul>
+<h2 id="主题-1声明式编程与-sql-基础-declarative-programming--sql-basics">主题 1：声明式编程与 SQL 基础 (Declarative Programming &amp; SQL Basics)</h2>
+<h3 id="主题概述">主题概述</h3>
+<p>SQL 是一种<strong>声明式语言 (Declarative Language)</strong>。与传统的命令式编程（如 Python，需分步指明“怎么做”）不同，声明式编程只需告诉计算机“想要什么”，由解释器决定如何执行。</p>
+<h3 id="核心概念">核心概念</h3>
+<h4 id="1-数据库结构-database-structure">1. 数据库结构 (Database Structure)</h4>
+<ul>
+<li><strong>表 (Table)</strong>：存储数据的核心单元，由固定数量的<strong>列 (Columns)</strong> 和多行<strong>数据条目 (Rows/Records)</strong> 组成。</li>
+<li><strong>列 (Column)</strong>：具有特定的名称和描述。</li>
+<li><strong>行 (Row)</strong>：为每一列提供具体的值。</li>
+</ul>
+<h4 id="2-创建表">2. 创建表</h4>
+<p>在 SQL 中，可以通过组合已有的数据或从头定义来创建表：</p>
+<ul>
+<li><strong>使用 <code>SELECT</code> 创建的是临时数据行</strong>,用于展示给用户看而不存储</li>
+<li>使用<code>CREATE TABLE &lt;NAME&gt; AS</code><strong>存储数据</strong></li>
+<li>使用 <code>UNION</code> 将多个 <code>SELECT</code> 语句连接起来,创建多行。</li>
+<li><strong>语法示例</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> dogs <span style="color:#66d9ef">AS</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">SELECT</span> <span style="color:#e6db74">&#34;abraham&#34;</span> <span style="color:#66d9ef">AS</span> name, <span style="color:#e6db74">&#34;long&#34;</span> <span style="color:#66d9ef">AS</span> fur <span style="color:#66d9ef">UNION</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">SELECT</span> <span style="color:#e6db74">&#34;barack&#34;</span>, <span style="color:#e6db74">&#34;short&#34;</span> <span style="color:#66d9ef">UNION</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">SELECT</span> <span style="color:#e6db74">&#34;clinton&#34;</span>, <span style="color:#e6db74">&#34;long&#34;</span>;
+</span></span></code></pre></div><h4 id="3-选择数据-the-select-statement">3. 选择数据 (The SELECT Statement)</h4>
+<p>最基本的查询结构，用于从表中提取特定数据。</p>
+<ul>
+<li><strong><code>SELECT</code>会做什么?</strong>
+<ul>
+<li><strong>无FROM</strong>: 可以制造单行,用逗号将同一行内不同列的内容隔开多用于<code>CREATE</code>中;可以用<code>AS</code> 取名作为一列的列名称</li>
+<li><strong>有FROM</strong>: 从FROM的TABLE中用列名称把一列拿出来(即列名称会被evaluate成为多个行的值)</li>
+<li><code>SELECE</code>始终决定了列规模</li>
+<li><code>SELECT * FROM</code>选择全部</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>语法顺序</strong>：<code>SELECT [列名] FROM [表名] WHERE [过滤条件] ORDER BY [排序方式] LIMIT [数量];</code></li>
+<li><strong>WHERE 关键字</strong>：用于根据布尔条件过滤行。(输入表的行子集(subset of the rows of the input table))</li>
+<li><strong>ORDER BY 关键字</strong>：对结果进行排序（<code>ASC</code> 升序，默认；<code>DESC</code> 降序）。</li>
+<li><strong>LIMIT关键字</strong>: 限制输出行数</li>
+</ul>
+<h4 id="4-select语句中的算术arithmetic">4. <code>SELECT</code>语句中的算术(Arithmetic)</h4>
+<p>-&gt; 直接使用运算符号</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> restaurant <span style="color:#66d9ef">AS</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#ae81ff">101</span> <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">table</span>, <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">AS</span> single, <span style="color:#ae81ff">2</span> <span style="color:#66d9ef">AS</span> couple <span style="color:#66d9ef">UNION</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#ae81ff">102</span> , <span style="color:#ae81ff">0</span> , <span style="color:#ae81ff">3</span> <span style="color:#66d9ef">UNION</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#ae81ff">103</span> , <span style="color:#ae81ff">3</span> , <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sqlite<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">table</span>, single <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> couple <span style="color:#66d9ef">AS</span> 
+</span></span><span style="display:flex;"><span>total <span style="color:#66d9ef">FROM</span> restaurant;
+</span></span></code></pre></div><hr>
+<h2 id="主题-2连接与别名-joins--aliasing">主题 2：连接与别名 (Joins &amp; Aliasing)</h2>
+<h3 id="主题概述-1">主题概述</h3>
+<p><strong>连接 (Join)</strong> 允许我们组合多个表的数据。当我们连接两个表时，结果是一个新表，其中包含原始表行之间的每一种可能组合（笛卡尔积）。</p>
+<h3 id="核心概念-core-concepts">核心概念 (Core Concepts)</h3>
+<h4 id="1-连接表-joining-tables">1. 连接表 (Joining Tables)</h4>
+<ul>
+<li><strong>语法</strong>：在 <code>FROM</code> 子句中列出多个表名，用逗号分隔。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> parents, dogs <span style="color:#66d9ef">WHERE</span> child <span style="color:#f92672">=</span> name;
+</span></span></code></pre></div><h4 id="2-别名-aliasing">2. 别名 (Aliasing)</h4>
+<p>当连接同一个表两次（Self-join）或多个表有重名列时，必须使用别名。</p>
+<ul>
+<li><strong>语法</strong>：使用 <code>AS</code> 关键字（可省略）。</li>
+<li><strong>作用</strong>：消除歧义。</li>
+<li><strong>示例</strong>：寻找所有兄弟姐妹（拥有共同父母的两个孩子）：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> a.child <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">first</span>, b.child <span style="color:#66d9ef">AS</span> <span style="color:#66d9ef">second</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">FROM</span> parents <span style="color:#66d9ef">AS</span> a, parents <span style="color:#66d9ef">AS</span> b
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">WHERE</span> a.parent <span style="color:#f92672">=</span> b.parent <span style="color:#66d9ef">AND</span> a.child <span style="color:#f92672">&lt;</span> b.child;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">*</span><span style="color:#960050;background-color:#1e0010">注意：使用</span> <span style="color:#f92672">`</span>a.child <span style="color:#f92672">&lt;</span> b.child<span style="color:#f92672">`</span> <span style="color:#960050;background-color:#1e0010">是为了去除重复项并避免自己与自己配对。</span><span style="color:#f92672">*</span>
+</span></span></code></pre></div><h3 id="扩展-显式连接---join-on语句">扩展: 显式连接 -&gt; JOIN ON语句</h3>
+<blockquote>
+<p>使用显式语句连接,使表格连接更清晰明了</p></blockquote>
+<h4 id="why-join"><strong>Why JOIN?</strong></h4>
+<p>数据库中的表通常是为了消除冗余而拆分的（例如：一张表存学生信息，一张表存班级信息）。<strong>连接 (Join)</strong> 的目的就是根据两个表之间的<strong>公共列</strong>（通常是 ID），将分散的数据重新组合成一行。</p>
+<p>CS61A 风格: <strong>隐式连接 (Implicit Join)</strong></p>
+<p>这是 PPT 中主要演示的方法。它实际上是先做笛卡尔积（Cross Join），然后用 <code>WHERE</code> 过滤。</p>
+<ul>
+<li><strong>语法</strong>：在 <code>FROM</code> 子句中用逗号分隔表名，在 <code>WHERE</code> 子句中指定连接条件。</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name, course 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students, enrollments 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> students.sid <span style="color:#f92672">=</span> enrollments.sid;
+</span></span></code></pre></div><p>现代标准风格: <strong>显式连接 (Explicit JOIN)</strong></p>
+<p>这是更推荐的写法，语义更清晰，将“连接逻辑”和“过滤逻辑”分开了。</p>
+<ul>
+<li><strong>语法</strong>：使用 <code>JOIN</code> 关键字，并用 <code>ON</code> 指定连接条件。</li>
+<li><strong>示例</strong>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name, course 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> students 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INNER</span> <span style="color:#66d9ef">JOIN</span> enrollments 
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ON</span> students.sid <span style="color:#f92672">=</span> enrollments.sid;
+</span></span></code></pre></div><ul>
+<li>常见的连接类型 (Types of Joins)</li>
+</ul>
+<p>为了演示，假设我们有两张表：</p>
+<ul>
+<li><strong>Table A (Students)</strong>: <code>{1: 'Alice', 2: 'Bob', 3: 'Charlie'}</code></li>
+<li><strong>Table B (Grades)</strong>: <code>{1: 'A', 2: 'B', 4: 'C'}</code> (注意：Charlie 没有成绩，ID 4 的成绩属于不存在的学生)</li>
+</ul>
+<h4 id="1-内连接-inner-join">(1) 内连接 (INNER JOIN)</h4>
+<ul>
+<li><strong>定义</strong>：只保留两个表中<strong>都存在</strong>匹配关系的行（交集）。</li>
+<li><strong>CS61A 写法</strong>：<code>FROM A, B WHERE A.id = B.id</code></li>
+<li><strong>标准写法</strong>：<code>FROM A INNER JOIN B ON A.id = B.id</code></li>
+<li><strong>结果</strong>：Alice (A), Bob (B)。(Charlie 和 ID 4 被丢弃)</li>
+</ul>
+<h4 id="2-左连接-left-outer-join">(2) 左连接 (LEFT OUTER JOIN)</h4>
+<ul>
+<li>
+<p><strong>定义</strong>：保留<strong>左表</strong>（FROM 后的表）的所有行。如果右表没有匹配，右表的列显示为 <code>NULL</code>。</p>
+</li>
+<li>
+<p><strong>标准写法</strong>：<code>FROM A LEFT JOIN B ON A.id = B.id</code></p>
+</li>
+<li>
+<p><strong>结果</strong>：</p>
+</li>
+<li>
+<p>Alice - A</p>
+</li>
+<li>
+<p>Bob - B</p>
+</li>
+<li>
+<p>Charlie - <strong>NULL</strong> (因为 Charlie 在左表，但右表没成绩)</p>
+</li>
+<li>
+<p><em>注：SQLite 支持 LEFT JOIN，但不支持 RIGHT JOIN。</em></p>
+</li>
+</ul>
+<h4 id="3-交叉连接-cross-join--cartesian-product">(3) 交叉连接 (CROSS JOIN / Cartesian Product)</h4>
+<ul>
+<li>每一行 A 与每一行 B 配对，产生所有可能的组合。</li>
+</ul>
+<ul>
+<li>在输出中连接string使用<code>||</code></li>
+</ul>
+<hr>
+<h2 id="主题-3聚合与分组-aggregation--grouping">主题 3：聚合与分组 (Aggregation &amp; Grouping)</h2>
+<h3 id="主题概述-2">主题概述</h3>
+<p>聚合函数允许我们对一组行执行操作并返回单个值，通常与分组配合使用。</p>
+<h3 id="核心概念-core-concepts-1">核心概念 (Core Concepts)</h3>
+<h4 id="1-聚合函数-aggregate-functions">1. 聚合函数 (Aggregate Functions)</h4>
+<ul>
+<li><code>COUNT(*)</code>：计算行数。</li>
+<li><code>SUM(col)</code>：求某一列的和。(注:求行的值需要使用多个<code>+</code>运算符)</li>
+<li><code>MIN(col)</code> / <code>MAX(col)</code>：某一列中的最小值/最大值。</li>
+<li><code>AVG(col)</code>：某一列的平均值。</li>
+</ul>
+<h4 id="2-分组查询-group-by">2. 分组查询 (GROUP BY)</h4>
+<ul>
+<li><code>GROUP BY &lt;expression&gt;</code>后表达式求值结果相同被化为同一组,表达式中可以使用多个列名和运算符</li>
+</ul>
+<ul>
+<li><strong>作用</strong>：将结果集划分为多个组，对每个组分别应用聚合函数。</li>
+<li><strong>HAVING 过滤</strong>：用于过滤<strong>组</strong>，类似于 <code>WHERE</code> 过滤<strong>行</strong>。</li>
+<li><strong>示例</strong>：统计每种毛发类型的狗的数量，且只显示数量大于 1 的组：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> fur, <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">FROM</span> dogs <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> fur <span style="color:#66d9ef">HAVING</span> <span style="color:#66d9ef">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>;
+</span></span></code></pre></div><hr>
+<h2 id="主题-4修改表记录-modifying-records">主题 4：修改表记录 (Modifying Records)</h2>
+<h3 id="主题概述-3">主题概述</h3>
+<p>除了查询，SQL 还提供了创建空表及增删改查记录的语句。</p>
+<h3 id="核心概念-core-concepts-2">核心概念 (Core Concepts)</h3>
+<h4 id="1-表的生命周期">1. 表的生命周期</h4>
+<ul>
+<li>
+<p><strong>CREATE TABLE</strong>：创建一个没有初始数据的空表。</p>
+</li>
+<li>
+<p><code>CREATE TABLE [name]([column_defs]);</code></p>
+</li>
+<li>
+<p><strong>DROP TABLE</strong>：从数据库中永久删除表。</p>
+</li>
+<li>
+<p><code>DROP TABLE [IF EXISTS] [name];</code></p>
+</li>
+</ul>
+<ul>
+<li>例:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> parents(parent, child);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> dogs(name, fur, phrase <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;woof&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> dogs;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> parents;
+</span></span></code></pre></div></li>
+</ul>
+<hr>
+<h4 id="2-数据操作-dml">2. 数据操作 (DML)</h4>
+<ul>
+<li><strong>INSERT</strong>：插入新行。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> [<span style="color:#66d9ef">table</span>]([columns]) <span style="color:#66d9ef">VALUES</span>([<span style="color:#66d9ef">values</span>]), ([<span style="color:#66d9ef">values</span>]);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>e.<span style="color:#66d9ef">g</span>.
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> dogs(name, fur) <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;fillmore&#39;</span>, <span style="color:#e6db74">&#39;curly&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> dogs <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;delano&#39;</span>, <span style="color:#e6db74">&#39;long&#39;</span>, <span style="color:#e6db74">&#39;hi!&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> dogs(fur, phrase) <span style="color:#66d9ef">VALUES</span>(<span style="color:#e6db74">&#39;curly&#39;</span>, <span style="color:#e6db74">&#39;bark&#39;</span>);
+</span></span></code></pre></div><ul>
+<li><strong>UPDATE</strong>：修改现有记录。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> [<span style="color:#66d9ef">table</span>] <span style="color:#66d9ef">SET</span> [<span style="color:#66d9ef">column</span>] <span style="color:#f92672">=</span> [expression] <span style="color:#66d9ef">WHERE</span> [condition];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>e.<span style="color:#66d9ef">g</span>.
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">UPDATE</span> dogs <span style="color:#66d9ef">SET</span> phrase <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;WOOF&#39;</span> <span style="color:#66d9ef">WHERE</span> fur <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;curly&#39;</span>;
+</span></span></code></pre></div><ul>
+<li><strong>DELETE</strong>：删除现有行。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> [<span style="color:#66d9ef">table</span>] <span style="color:#66d9ef">WHERE</span> [condition];
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>e.<span style="color:#66d9ef">g</span>.
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">DELETE</span> <span style="color:#66d9ef">FROM</span> dogs <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;herbert&#39;</span>;
+</span></span></code></pre></div><h2 id="做题技巧">做题技巧</h2>
+<ul>
+<li>确定输入,输出,一列一列join</li>
+<li>有时可创建辅助表来帮助思考(<code>FROM</code>后面加括号,写一串<code>SELECT</code>语句)</li>
+</ul></section>
+
+  
+  
+  <div class="paginator">
+    
+    <a class="prev" href="https://cloudymount789.github.io/blog/sicp_note_interpreter/">
+      <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.77086 21.1546C11.0491 22.698 21.4339 21.7773 21.4339 16.3608V4.63375C21.4339 3.93962 21.3581 3.30535 21.1917 2.76787M3.77086 21.1546C1.9934 20.7777 0.973585 18.7264 1.08749 16.688C1.2668 13.479 1.15721 9.43135 1.00513 6.21507C0.87809 3.52811 3.12891 1.16316 5.51029 1.25008C9.76594 1.40542 15.377 1.20229 18.7912 1.00542C20.0864 0.930734 20.8406 1.63385 21.1917 2.76787M3.77086 21.1546C4.56586 21.4723 5.49168 21.7879 6.5 22.0658M21.1917 2.76787C23.1097 4.18217 23.13 12.4191 22.9004 16.3608C20.8478 24.0194 12.3061 23.6662 6.5 22.0658M21.1917 2.76787C21.7612 4.51192 22.7203 9.67216 22 16.3608C21.2797 23.0494 11.3665 22.9511 6.5 22.0658M9.94496 9C9.28897 9.61644 7.63215 10.997 6.04814 11.7966C5.98257 11.8297 5.98456 11.9753 6.05061 12.0063C7.05496 12.4779 8.92941 13.9264 9.94496 15M6.44444 11.9667C8.86549 12.0608 14 12 16 11" stroke="currentColor" stroke-linecap="round"/>
+      </svg>
+      <span>SICP_interpreter_笔记</span></a>
+    
+    
+    <a class="next" href="https://cloudymount789.github.io/blog/sicp_note_scheme/"><span>SICP_scheme_笔记</span>
+      <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.77086 21.1546C11.0491 22.698 21.4339 21.7773 21.4339 16.3608V4.63375C21.4339 3.93962 21.3581 3.30535 21.1917 2.76787M3.77086 21.1546C1.9934 20.7777 0.973585 18.7264 1.08749 16.688C1.2668 13.479 1.15721 9.43135 1.00513 6.21507C0.87809 3.52811 3.12891 1.16316 5.51029 1.25008C9.76594 1.40542 15.377 1.20229 18.7912 1.00542C20.0864 0.930734 20.8406 1.63385 21.1917 2.76787M3.77086 21.1546C4.56586 21.4723 5.49168 21.7879 6.5 22.0658M21.1917 2.76787C23.1097 4.18217 23.13 12.4191 22.9004 16.3608C20.8478 24.0194 12.3061 23.6662 6.5 22.0658M21.1917 2.76787C21.7612 4.51192 22.7203 9.67216 22 16.3608C21.2797 23.0494 11.3665 22.9511 6.5 22.0658M12.055 9C12.711 9.61644 14.3679 10.997 15.9519 11.7966C16.0174 11.8297 16.0154 11.9753 15.9494 12.0063C14.945 12.4779 13.0706 13.9264 12.055 15M15.5556 11.9667C13.1345 12.0608 8 12 6 11" stroke="currentColor" stroke-linecap="round"/>
+      </svg>
+    </a>
+    
+  </div>
+  
+
+  
+
+
+  
+  
+</article>
+
+
+        </div><footer class="footer">
+  <p>&copy; 2026 <a href="https://cloudymount789.github.io/">CloudyMount</a>
+    Powered by
+    <a href="https://gohugo.io/" rel="noopener" target="_blank">Hugo️️</a>
+    <a href="https://github.com/guangzhengli/hugo-theme-ladder" rel="noopener" target="_blank">Ladder</a>
+️  </p>
+</footer>
+
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.5376 22.7916C11.0152 22.7207 22.5795 21.1781 22.0978 10.4211C22.0536 9.43274 21.9303 8.53367 21.7387 7.71865M10.5376 22.7916C16.876 22.3728 20.0969 19.8899 21.5383 16.9142M10.5376 22.7916C9.7707 22.9055 8.97982 22.8964 8.19743 22.7725M21.7387 7.71865C21.4988 6.69828 21.1518 5.80967 20.7188 5.04257M21.7387 7.71865C22.6022 10.1105 23.0542 13.7848 21.5383 16.9142M20.7188 5.04257C17.1684 -1.24629 7.83127 0.632493 4.27577 5.04257C2.88063 6.77451 -0.0433281 11.1668 1.38159 16.6571C2.27481 20.0988 5.17269 22.2936 8.19743 22.7725M20.7188 5.04257C22.0697 6.9404 24.0299 11.3848 22.3541 15.4153M21.5383 16.9142C21.8737 16.4251 22.1428 15.9235 22.3541 15.4153M8.19743 22.7725C12.1971 23.4683 20.6281 22.971 22.3541 15.4153M14 10.945C13.3836 10.289 12.003 8.63215 11.2034 7.04814C11.1703 6.98257 11.0247 6.98456 10.9937 7.05061C10.5221 8.05496 9.07362 9.92941 8 10.945M11.0333 7.44444C10.9392 9.86549 11 15 12 17" stroke="currentColor" stroke-linecap="round"/>
+    </svg>
+</a>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+</script>
+
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'Copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'Copied';
+            setTimeout(() => {
+                copybutton.innerHTML = 'Copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+        codeblock.parentNode.appendChild(copybutton);
+    });
+</script></main>
+    </body>
+  
+  <script src="/main.min.6bb26b69159420159c74dc9e097b06a578ed2b68c701466a91a44a9632d851bd0af167a1b30012387b4c512b48ad9ad4d3394e04d77ae38d57e1920fe4ed34fe.js" integrity="sha512-a7JraRWUIBWcdNyeCXsGpXjtK2jHAUZqkaRKljLYUb0K8WehswASOHtMUStIrZrU0zlOBNd6441X4ZIP5O00/g==" crossorigin="anonymous" defer></script></html>
